@@ -6,7 +6,6 @@ import matplotlib.pyplot as pyplot
 import textblob
 from textblob import TextBlob
 import lzma
-#import zstandard
 import nltk
 import numpy as np
 import pandas as pd
@@ -159,3 +158,4 @@ def main():
     plot_bigrams()
     plot_metric()
     
+main()
