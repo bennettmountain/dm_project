@@ -64,15 +64,15 @@ def open_files():
     os.chdir('/data/files.pushshift.io/reddit/submissions')
     files = [f for f in os.listdir(path)]
     for i in files:
-        print('opening file')
+        print('opening' + i)
         if i.endswith('.bz2'):
             with bz2.open(i, "r") as content: 
                  for line in content:
                     add_data(line)
-        elif i.endswith('.xz'):
-            with lzma.open(i, 'rt') as content:
-                for line in content:
-                    add_data(line)
+        # elif i.endswith('.xz'):
+        #     with lzma.open(i, 'rt') as content:
+        #         for line in content:
+        #             add_data(line)
         # elif i.endswith('.zst'): # need to figure out how to open these.
         #     with as content:
         #         add_data()
