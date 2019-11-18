@@ -43,16 +43,15 @@ def add_data():
     creates a tuple containing the title and score of the post, and adds it to the
     list of tuples in its specified spot in the output dict.
     '''
-    for line in content:
-        post = json.loads(line)
-        sub = post.get("subreddit")
-        if sub in subreddit_list:
-            if post.get("score") > 10: # arbitrary choice, should think about this more and change the threshold to be specific to each sub.
-                normalized_score = (post.get("score") * 1.0) / subreddit_members.get(sub)
-                if sub in output:
-                    output[sub].append((post.get("title"), normalized_score))
-                else:
-                    output[sub] = [(post.get("title"), normalized_score)]
+    post = json.loads(line)
+    sub = post.get("subreddit")
+    if sub in subreddit_list:
+        if post.get("score") > 10: # arbitrary choice, should think about this more and change the threshold to be specific to each sub.
+            normalized_score = (post.get("score") * 1.0) / subreddit_members.get(sub)
+            if sub in output:
+                output[sub].append((post.get("title"), normalized_score))
+            else:
+                output[sub] = [(post.get("title"), normalized_score)]
 
 def open_files():
     '''
@@ -64,11 +63,13 @@ def open_files():
     files = [f for f in os.listdir(path)]
     for i in files:
         if i.endswith('.bz2'):
-            with bz2.open(i, "r") as content:  
-                add_data()
+            with bz2.open(i, "r") as content: 
+                 for line in content:
+                    add_data()
         elif i.endswith('.xz'):
             with lzma.open(i, 'rt') as content:
-                add_data()
+                for line in content:
+                    add_data()
         # elif i.endswith('.zst'): # need to figure out how to open these.
         #     with as content:
         #         add_data()
