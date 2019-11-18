@@ -45,8 +45,7 @@ def add_data(line):
     creates a tuple containing the title and score of the post, and adds it to the
     list of tuples in its specified spot in the output dict.
     '''
-    post = json.load(line)
-    print(type(post))
+    post = json.loads(line)
     sub = post.get("subreddit")
     if sub in subreddit_list:
         if post.get("score") > 10: # arbitrary choice, should think about this more and change the threshold to be specific to each sub.
