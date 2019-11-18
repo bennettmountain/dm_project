@@ -64,6 +64,7 @@ def open_files():
     os.chdir('/data/files.pushshift.io/reddit/submissions')
     files = [f for f in os.listdir(path)]
     for i in files:
+        print('opening file')
         if i.endswith('.bz2'):
             with bz2.open(i, "r") as content: 
                  for line in content:
