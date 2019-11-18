@@ -17,6 +17,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 from PIL import Image
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+import re
 
 subreddit_list = ['politics','uspolitics','americanpolitics','progressive','democrats','Liberal','Republican',
                     'Conservative','Libertarian']
@@ -50,9 +51,9 @@ def add_data():
             if post.get("score") > 10: # arbitrary choice, should think about this more and change the threshold to be specific to each sub.
                 normalized_score = (post.get("score") * 1.0) / subreddit_members.get(sub)
                 if sub in output:
-                    output[sub].append((post.get("title"), post.get("score")))
+                    output[sub].append((post.get("title"), normalized_score))
                 else:
-                    output[sub] = [(post.get("title"), post.get("score"))]
+                    output[sub] = [(post.get("title"), normalized_score)]
 
 def open_files():
     '''
@@ -76,53 +77,50 @@ def aggregate_titles():
     '''
     Aggregate all the post titles for each subreddit
     '''
-    for subreddit in output:
-        aggregated_titles[subreddit] = " ".join(j[0] for j in output[subreddit])
+    aggregated_titles[subreddit] = " ".join(j[0] for j in output[subreddit])
         
 def create_metric():
     '''
     TODO: count number of conservative and liberal words. if num conservative > num liberal, multiply by -1.
     Creates a bar graph with each subreddit and their aggregated political bias score
     '''
-    for subreddit in output:
-        post_list = output[subreddit]
-        scores[subreddit] = 0
-            for j in post_list:
-                num_cons_words = 0
-                num_lib_words = 0
-                title_category_factor = 1 # 1 if title is about a liberal topic, -1 if about conservative topic
-                for word in j[0]:
-                    if word in num_cons_words:
-                        cons_words+=1
-                    elif word in num_lib_words:
-                        lib_words+=1
-                if num_cons_words >= num_lib_word:
-                    title_category = -1
-                title = blob(j[0])
-                if title.sentiment.subjectivity > 0.0:
-                    # heavier weighting for subjective article titles
-                    # since the min subjectivity > 0 is 0.1, multiplying by 50 gives it at least 5x weight
-                    sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
-                else:
-                    sntmnt = title.sentiment.polarity
-                scores[subreddit] += ((j[1] * 1.0) + sntmnt) * title_category_factor
+    post_list = output[subreddit]
+    scores[subreddit] = 0
+    for j in post_list:
+        num_cons_words = 0
+        num_lib_words = 0
+        title_category_factor = 1 # 1 if title is about a liberal topic, -1 if about conservative topic
+        for word in j[0]:
+            if word in num_cons_words:
+                cons_words+=1
+            elif word in num_lib_words:
+                lib_words+=1
+        if num_cons_words >= num_lib_word:
+            title_category_factor = -1
+        title = blob(j[0])
+        if title.sentiment.subjectivity > 0.0:
+            # heavier weighting for subjective article titles
+            # since the min subjectivity > 0 is 0.1, multiplying by 50 gives it at least 5x weight
+            sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
+        else:
+            sntmnt = title.sentiment.polarity
+        scores[subreddit] += ((j[1] * 1.0) + sntmnt) * title_category_factor
     
 def create_bigrams():
     '''
     Creates a dict with the frequency of the bigrams for each subreddit
     '''
-    for subreddit in aggregated_titles:
-        bigram_count_mini = {} # holds bigram frequencies for each subreddit
-        text = aggregated_titles[subreddit]
-        text = re.sub('\W', ' ', sentence.lower())
-        words = text.split()
-        bi_grams = list(zip(words, words[1:]))
-        for gram in bi_grams:
-            if gram not in bigram_count_mini:
-                bigram_count_mini[gram] = 1
-            else:
-                bigram_count_mini[gram]+=1
-        bigram_count[subreddit] = bigram_count_mini
+    bigram_count_mini = {} # holds bigram frequencies for each subreddit
+    text = aggregated_titles[subreddit]
+    text = re.sub('\W', ' ', sentence.lower())
+    words = text.split()
+    bi_grams = list(zip(words, words[1:]))
+    for gram in bi_grams:
+        if gram not in bigram_count_mini:
+            bigram_count_mini[gram] = 1
+        else:
+            bigram_count_mini[gram]+=1
+    bigram_count[subreddit] = bigram_count_mini
 
 def plot_bigrams():
     for subreddit in bigram_count:
@@ -141,15 +139,14 @@ def plot_wordclouds():
     '''
     Creates a wordcloud for each subreddit
     '''
-    for subreddit in aggregated_titles: # aggregate all titles of the subreddit in a dict
-        agg_text = aggregated_titles[subreddit]
-        stopwords= set(STOPWORDS)
-        wordcloud = WordCloud(stopwords=stopwords,max_font_size=50, max_words=100, background_color="white").generate(agg_text)
-        plt.figure()
-        plt.imshow(wordcloud, interpolation="bilinear")
-        plt.axis("off")
-        wordcloud_string = subreddit + '_wordcloud.png'
-        wordcloud.to_file(wordcloud_string)
+    agg_text = aggregated_titles[subreddit]
+    stopwords= set(STOPWORDS)
+    wordcloud = WordCloud(stopwords=stopwords,max_font_size=50, max_words=100, background_color="white").generate(agg_text)
+    plt.figure()
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")
+    wordcloud_string = subreddit + '_wordcloud.png'
+    wordcloud.to_file(wordcloud_string)
 
 def main():
     open_files()
@@ -157,7 +154,8 @@ def main():
         aggregate_titles()
         create_metric()
     for subreddit in aggregated_titles:
+        plot_wordclouds()
         create_bigrams
     plot_bigrams()
     plot_metric()
-    plot_wordclouds()
+    
