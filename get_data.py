@@ -2,7 +2,7 @@ import json
 import bz2
 import os
 import ast
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import textblob
 from textblob import TextBlob
 import lzma
@@ -17,6 +17,8 @@ from nltk.corpus import stopwords
 from PIL import Image
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import re
+import operator
+import string
 
 subreddit_list = ['politics','uspolitics','americanpolitics','progressive','democrats','Liberal','Republican',
                     'Conservative','Libertarian']
@@ -37,7 +39,7 @@ scores = {}
 aggregated_titles = {}
 bigram_count = {}
 
-def add_data():
+def add_data(line):
     '''
     Parses through all the lines in a file (where each line in the file is a dict),
     creates a tuple containing the title and score of the post, and adds it to the
@@ -65,22 +67,22 @@ def open_files():
         if i.endswith('.bz2'):
             with bz2.open(i, "r") as content: 
                  for line in content:
-                    add_data()
+                    add_data(line)
         elif i.endswith('.xz'):
             with lzma.open(i, 'rt') as content:
                 for line in content:
-                    add_data()
+                    add_data(line)
         # elif i.endswith('.zst'): # need to figure out how to open these.
         #     with as content:
         #         add_data()
 
-def aggregate_titles():
+def aggregate_titles(subreddit):
     '''
     Aggregate all the post titles for each subreddit
     '''
     aggregated_titles[subreddit] = " ".join(j[0] for j in output[subreddit])
         
-def create_metric():
+def create_metric(subreddit):
     '''
     TODO: count number of conservative and liberal words. if num conservative > num liberal, multiply by -1.
     Creates a bar graph with each subreddit and their aggregated political bias score
@@ -92,13 +94,13 @@ def create_metric():
         num_lib_words = 0
         title_category_factor = 1 # 1 if title is about a liberal topic, -1 if about conservative topic
         for word in j[0]:
-            if word in num_cons_words:
+            if word in conservative_words:
                 cons_words+=1
-            elif word in num_lib_words:
+            elif word in liberal_words:
                 lib_words+=1
-        if num_cons_words >= num_lib_word:
+        if num_cons_words >= num_lib_words:
             title_category_factor = -1
-        title = blob(j[0])
+        title = TextBlob(j[0])
         if title.sentiment.subjectivity > 0.0:
             # heavier weighting for subjective article titles
             # since the min subjectivity > 0 is 0.1, multiplying by 50 gives it at least 5x weight
@@ -107,13 +109,15 @@ def create_metric():
             sntmnt = title.sentiment.polarity
         scores[subreddit] += ((j[1] * 1.0) + sntmnt) * title_category_factor
     
-def create_bigrams():
+def create_bigrams(subreddit):
     '''
     Creates a dict with the frequency of the bigrams for each subreddit
     '''
     bigram_count_mini = {} # holds bigram frequencies for each subreddit
     text = aggregated_titles[subreddit]
-    text = re.sub('\W', ' ', sentence.lower())
+    translator = str.maketrans('', '', string.punctuation)
+    text = text.translate(translator)
+    text = text.lower()
     words = text.split()
     bi_grams = list(zip(words, words[1:]))
     for gram in bi_grams:
@@ -125,8 +129,9 @@ def create_bigrams():
 
 def plot_bigrams():
     for subreddit in bigram_count:
+        bigram_dict = bigram_count[subreddit]
         bigram_string = subreddit + '_top_10_bigrams_.png'
-        top_10_bigrams_ = dict(sorted(x.items(), key=operator.itemgetter(1), reverse=True)[:10])
+        top_10_bigrams_ = dict(sorted(bigram_dict.items(), key=operator.itemgetter(1), reverse=True)[:10])
         plt.bar(range(len(top_10_bigrams_)), list(top_10_bigrams_.values()), align='center')
         plt.xticks(range(len(top_10_bigrams_)), list(top_10_bigrams_.keys()))
         plt.savefig(bigram_string)
@@ -136,7 +141,7 @@ def plot_metric():
     plt.xticks(range(len(scores)), list(scores.keys()))
     plt.savefig('subreddit_scores.png')
 
-def plot_wordclouds():
+def plot_wordclouds(subreddit):
     '''
     Creates a wordcloud for each subreddit
     '''
@@ -152,11 +157,11 @@ def plot_wordclouds():
 def main():
     open_files()
     for subreddit in output:
-        aggregate_titles()
-        create_metric()
+        aggregate_titles(subreddit)
+        create_metric(subreddit)
     for subreddit in aggregated_titles:
-        plot_wordclouds()
-        create_bigrams
+        plot_wordclouds(subreddit)
+        create_bigrams(subreddit)
     plot_bigrams()
     plot_metric()
     
