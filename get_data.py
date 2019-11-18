@@ -45,7 +45,7 @@ def add_data(line):
     creates a tuple containing the title and score of the post, and adds it to the
     list of tuples in its specified spot in the output dict.
     '''
-    post = line
+    post = json.load(line)
     print(type(post))
     sub = post.get("subreddit")
     if sub in subreddit_list:
