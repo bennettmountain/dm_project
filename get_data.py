@@ -25,7 +25,7 @@ subreddit_members = {'politics':5.5E6,'uspolitics':1.65E4,'americanpolitics':1.1
                         'Liberal':7.78E4,'Republican':9.21E4,'Conservative':268E5,'Libertarian':345E5}
                         
 # get more conservative and liberal words???
-liberal_words = [,"progressive","Biden","universal basic income","AOC", "Ocasio-Cortez", "liberal", "democrat", "Obama", "Clinton", "Sanders", 
+liberal_words = ["progressive","Biden","universal basic income","AOC", "Ocasio-Cortez", "liberal", "democrat", "Obama", "Clinton", "Sanders", 
 "green new deal", "leftist", "Yang", "Warren", "Kamala", "medicare for all"]
 
 conservative_words = ["Cheney","Shapiro","Koch","Paul Ryan","Rand Paul","Bush","Palin","Mattis","McCain","Romney", "Trump",
