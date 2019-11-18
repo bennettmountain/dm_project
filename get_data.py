@@ -59,7 +59,7 @@ def open_files():
     TODO: figure out how to handle zst files
     Goes through the directory containing all the data files.
     '''
-    path = os.path.expanduser('~/data/files.pushshift.io/reddit/submissions')
+    path = os.path.expanduser('/data/files.pushshift.io/reddit/submissions')
     files = [f for f in os.listdir(path)]
     for i in files:
         if i.endswith('.bz2'):
