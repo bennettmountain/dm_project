@@ -46,6 +46,7 @@ def add_data(line):
     list of tuples in its specified spot in the output dict.
     '''
     post = line
+    print(type(post))
     sub = post.get("subreddit")
     if sub in subreddit_list:
         if post.get("score") > 10: # arbitrary choice, should think about this more and change the threshold to be specific to each sub.
