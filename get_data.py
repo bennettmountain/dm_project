@@ -60,12 +60,15 @@ def open_files():
     TODO: figure out how to handle zst files
     Goes through the directory containing all the data files.
     '''
-    path = os.path.expanduser('/data/files.pushshift.io/reddit/submissions')
+    #path = os.path.expanduser('/data/files.pushshift.io/reddit/submissions')
     os.chdir('/data/files.pushshift.io/reddit/submissions')
-    files = [f for f in os.listdir(path)]
+    #files = [f for f in os.listdir(path)] issue with RS_2011-01.bz2 having some non unicode-32 characters.
+    files = ['RS_2012-02.bz2','RS_2013-07.bz2','RS_2011-11.bz2','RS_2017-03.bz2','RS_2014-10.bz2','RS_2013-10.bz2',
+    'RS_2012-11.bz2','RS_2011-12.bz2','RS_2011-02.bz2','RS_2014-09.bz2','RS_2013-08.bz2','RS_2011-05.bz2','RS_2017-11.bz2',
+    'RS_2017-09.bz2','RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2']
     for i in files:
-        if i.endswith('2011-01.bz2'):
-            print('opening ' + i)
+        if i.endswith('.bz2'):
+            print('  ' + i)
             with bz2.open(i, "r") as content: 
                  for line in content:
                     add_data(line)
