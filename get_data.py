@@ -62,14 +62,15 @@ def open_files():
     TODO: figure out how to handle zst files
     Goes through the directory containing all the data files.
     '''
-    path = os.path.expanduser('/data/files.pushshift.io/reddit/submissions')
+    #path = os.path.expanduser('/data/files.pushshift.io/reddit/submissions')
     os.chdir('/data/files.pushshift.io/reddit/submissions')
-    files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
+    #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-03.bz2','RS_2017-11.bz2','RS_2017-09.bz2','RS_2012-02.bz2','RS_2013-07.bz2','RS_2011-11.bz2','RS_2014-10.bz2','RS_2013-10.bz2',
     #'RS_2012-11.bz2','RS_2011-12.bz2','RS_2011-02.bz2','RS_2014-09.bz2','RS_2013-08.bz2','RS_2011-05.bz2',
     #'RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2']
+    files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-09.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     for i in files:
-        if i.endswith('2017-10.bz2'):
+        if i.endswith('10.bz2'):
             print('  ' + i)
             with bz2.open(i, "r") as content: 
                  for line in content:
@@ -90,7 +91,6 @@ def aggregate_titles(subreddit):
         
 def create_metric(subreddit):
     '''
-    TODO: count number of conservative and liberal words. if num conservative > num liberal, multiply by -1.
     Creates a bar graph with each subreddit and their aggregated political bias score
     '''
     post_list = output[subreddit]
@@ -139,7 +139,10 @@ def plot_bigrams():
         bigram_string = '/home/bmountain/dm_project/'+ subreddit + '_top_10_bigrams_.png'
         top_10_bigrams_ = dict(sorted(bigram_dict.items(), key=operator.itemgetter(1), reverse=True)[:10])
         plt.bar(range(len(top_10_bigrams_)), list(top_10_bigrams_.values()), align='center')
-        plt.xticks(range(len(top_10_bigrams_)), list(top_10_bigrams_.keys()))
+        plt.xticks(range(len(top_10_bigrams_)), list(top_10_bigrams_.keys()), rotation = 'vertical')
+        plt.ylabel('Count')
+        plt.xlabel('Bigrams')
+        plt.title('r/' + subreddit + ' Top 10 Bigrams')
         plt.savefig(bigram_string)
         plt.clf()
         plt.cla()
@@ -147,7 +150,10 @@ def plot_bigrams():
 
 def plot_metric():
     plt.bar(range(len(scores)), list(scores.values()), align='center')
-    plt.xticks(range(len(scores)), list(scores.keys()))
+    plt.xticks(range(len(scores)), list(scores.keys()), rotation = 'vertical')
+    plt.xlabel('Subreddits')
+    plt.ylabel('Bias')
+    plt.title('Subreddit Bias Scores')
     plt.savefig('/home/bmountain/dm_project/subreddit_scores.png')
     plt.clf()
     plt.cla()
