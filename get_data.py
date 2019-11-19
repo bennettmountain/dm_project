@@ -141,11 +141,17 @@ def plot_bigrams():
         plt.bar(range(len(top_10_bigrams_)), list(top_10_bigrams_.values()), align='center')
         plt.xticks(range(len(top_10_bigrams_)), list(top_10_bigrams_.keys()))
         plt.savefig(bigram_string)
+        plt.clf()
+        plt.cla()
+        plt.close()
 
 def plot_metric():
     plt.bar(range(len(scores)), list(scores.values()), align='center')
     plt.xticks(range(len(scores)), list(scores.keys()))
     plt.savefig('/home/bmountain/dm_project/subreddit_scores.png')
+    plt.clf()
+    plt.cla()
+    plt.close()
 
 def plot_wordclouds(subreddit):
     '''
@@ -159,6 +165,9 @@ def plot_wordclouds(subreddit):
     plt.axis("off")
     wordcloud_string = '/home/bmountain/dm_project/'+ subreddit + '_wordcloud.png'
     wordcloud.to_file(wordcloud_string)
+    plt.clf()
+    plt.cla()
+    plt.close()
 
 def main():
     open_files()
@@ -166,8 +175,8 @@ def main():
         aggregate_titles(subreddit)
         create_metric(subreddit)
     for subreddit in aggregated_titles:
-        plot_wordclouds(subreddit)
         create_bigrams(subreddit)
+        plot_wordclouds(subreddit)
     plot_bigrams()
     plot_metric()
     
