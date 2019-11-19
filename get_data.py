@@ -70,7 +70,7 @@ def open_files():
     #'RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2']
     files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-09.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     for i in files:
-        if i.endswith('05.bz2'):
+        if i.endswith('04.bz2'):
             print('  ' + i)
             with bz2.open(i, "r") as content: 
                  for line in content:
@@ -143,7 +143,7 @@ def plot_bigrams():
         plt.ylabel('Count')
         plt.xlabel('Bigrams')
         plt.title('r/' + subreddit + ' Top 10 Bigrams')
-        plt.savefig(bigram_string)
+        plt.savefig(bigram_string, bbox_inches = "tight")
         plt.clf()
         plt.cla()
         plt.close()
@@ -154,7 +154,7 @@ def plot_metric():
     plt.xlabel('Subreddits')
     plt.ylabel('Bias')
     plt.title('Subreddit Bias Scores')
-    plt.savefig('/home/bmountain/dm_project/subreddit_scores.png')
+    plt.savefig('/home/bmountain/dm_project/subreddit_scores.png', bbox_inches = "tight")
     plt.clf()
     plt.cla()
     plt.close()
