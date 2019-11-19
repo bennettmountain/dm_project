@@ -70,7 +70,7 @@ def open_files():
     #'RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2']
     files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-09.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     for i in files:
-        if i.endswith('06.bz2'):
+        if i.endswith('05.bz2'):
             print('  ' + i)
             with bz2.open(i, "r") as content: 
                  for line in content:
