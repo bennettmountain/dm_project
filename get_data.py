@@ -22,10 +22,10 @@ import re
 import operator
 import string
 
-subreddit_list = ['politics','uspolitics','americanpolitics','progressive','democrats','Liberal','Republican',
+subreddit_list = ['politics','uspolitics','AmericanPolitics','progressive','democrats','Liberal','Republican',
                     'Conservative','Libertarian']
 
-subreddit_members = {'politics':5.5E6,'uspolitics':1.65E4,'americanpolitics':1.12E4,'progressive':6.17E4,'democrats':1.11E5,
+subreddit_members = {'politics':5.5E6,'uspolitics':1.65E4,'AmericanPolitics':1.12E4,'progressive':6.17E4,'democrats':1.11E5,
                         'Liberal':7.78E4,'Republican':9.21E4,'Conservative':268E5,'Libertarian':345E5}
                         
 # get more conservative and liberal words???
@@ -67,11 +67,11 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-03.bz2','RS_2017-11.bz2','RS_2017-09.bz2','RS_2012-02.bz2','RS_2013-07.bz2','RS_2011-11.bz2','RS_2014-10.bz2','RS_2013-10.bz2',
     #'RS_2012-11.bz2','RS_2011-12.bz2','RS_2011-02.bz2','RS_2014-09.bz2','RS_2013-08.bz2','RS_2011-05.bz2',
-    #'RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2']
-    files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-09.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
+    #'RS_2012-10.bz2','RS_2014-11.bz2','RS_2014-04.bz2','RS_2012-09.bz2','RS_2012-07.bz2'] 'RS_2017-09.bz2' not tested.
+    files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     for i in files:
-        if i.endswith('04.bz2'):
-            print('  ' + i)
+        if i.endswith('.bz2'):
+            print('opening  ' + i)
             with bz2.open(i, "r") as content: 
                  for line in content:
                     add_data(line)
