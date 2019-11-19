@@ -136,7 +136,7 @@ def create_bigrams(subreddit):
 def plot_bigrams():
     for subreddit in bigram_count:
         bigram_dict = bigram_count[subreddit]
-        bigram_string = subreddit + '_top_10_bigrams_.png'
+        bigram_string = '/home/bmountain/dm_project/'+ subreddit + '_top_10_bigrams_.png'
         top_10_bigrams_ = dict(sorted(bigram_dict.items(), key=operator.itemgetter(1), reverse=True)[:10])
         plt.bar(range(len(top_10_bigrams_)), list(top_10_bigrams_.values()), align='center')
         plt.xticks(range(len(top_10_bigrams_)), list(top_10_bigrams_.keys()))
@@ -145,7 +145,7 @@ def plot_bigrams():
 def plot_metric():
     plt.bar(range(len(scores)), list(scores.values()), align='center')
     plt.xticks(range(len(scores)), list(scores.keys()))
-    plt.savefig('subreddit_scores.png')
+    plt.savefig('/home/bmountain/dm_project/subreddit_scores.png')
 
 def plot_wordclouds(subreddit):
     '''
@@ -157,7 +157,7 @@ def plot_wordclouds(subreddit):
     plt.figure()
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
-    wordcloud_string = subreddit + '_wordcloud.png'
+    wordcloud_string = '/home/bmountain/dm_project/'+ subreddit + '_wordcloud.png'
     wordcloud.to_file(wordcloud_string)
 
 def main():
