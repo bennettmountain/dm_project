@@ -74,7 +74,7 @@ def add_data(line, date):
     '''
     try:
         post = json.loads(line)
-        with open("output.json", "r+") as json_file:
+        with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
             data = json.load(json_file)
             if date not in data["output_dates"]:
                 data["output_dates"][date] = {}
@@ -88,7 +88,7 @@ def add_data(line, date):
                     else:
                         data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
                         data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-        with open("output.json","w") as j_file:
+        with open("/home/bmountain/dm_project/output.json","w") as j_file:
             json.dump(data,j_file)
     except:
         pass
@@ -106,12 +106,12 @@ def open_files():
     files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     for i in files:
         # marks the file as being seen in the json
-        with open("output.json", "r+") as json_file:
+        with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
             data = json.load(json_file)
             if i not in data["files"]: # check if the file was already parsed through
                 file_date = i[3:10]
                 data["dates"].append(file_date)
-                with open("output.json","w") as j_file:
+                with open("/home/bmountain/dm_project/output.json","w") as j_file:
                     json.dump(data,j_file)
                 # only know that the bz2's work so far. should unit test other file types
                 if i.endswith('.bz2'):
@@ -142,7 +142,7 @@ def aggregate_titles(subreddit):
     '''
     Aggregate all the post titles for each subreddit
     '''
-    with open("output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         aggregated_titles[subreddit] = " ".join(j[0] for j in data["output_dateless"][subreddit])
         
@@ -152,7 +152,7 @@ def create_metric(subreddit):
     TODO:
     implement adding in the scores over time, create the spaghetti plot and need to sort the dates
     '''
-    with open("output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         post_list_dateless = data["output_dateless"][subreddit]
         scores[subreddit] = 0
@@ -181,7 +181,7 @@ def create_scores_for_each_date():
     TODO:
     check this over and make sure it correctly populates the dict
     '''
-    with open("output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         dates = data["output_dates"]
         for date in dates:
@@ -224,7 +224,7 @@ def create_spaghetti_plot():
     # multiple line plot
     num=0
     # want to loop through each subreddit first then get the dates
-    with open("output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.loads(json_file)
         for sub in data["output_dateless"]:
             num+=1
