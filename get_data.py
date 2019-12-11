@@ -108,7 +108,7 @@ def open_files():
         # marks the file as being seen in the json
         with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
             data = json.load(json_file)
-            if i not in data["files"]: # check if the file was already parsed through
+            if i not in data["dates"]: # check if the file was already parsed through
                 file_date = i[3:10]
                 data["dates"].append(file_date)
                 with open("/home/bmountain/dm_project/output.json","w") as j_file:
