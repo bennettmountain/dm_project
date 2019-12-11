@@ -1,6 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
-import simplejson as json
+import json
 import bz2
 import os
 import ast
