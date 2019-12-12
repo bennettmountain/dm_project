@@ -124,8 +124,9 @@ def open_files():
                             date = i[3:10]
                             for line in content:
                                 try:
+                                    print('reached try')
                                     post = json.loads(line)
-                                    data = json.load(json_file)
+                                    #data = json.load(json_file)
                                     if date not in data["output_dates"]:
                                         data["output_dates"][date] = {}
                                         print('date added to output_dates')
@@ -141,8 +142,8 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            with open("/home/bmountain/dm_project/output.json","w") as j_file:
-                                json.dump(data,j_file)
+                            # with open("/home/bmountain/dm_project/output.json","w") as j_file:
+                            #     json.dump(data,j_file)
                             print(datetime.datetime.now())
                             print('done opening ' + i)
                     elif i.endswith('.xz'):
@@ -200,6 +201,8 @@ def open_files():
                                     pass
                             print(datetime.datetime.now())
                             print('done opening ' + i)
+    with open("/home/bmountain/dm_project/output.json","w") as j_file:
+        json.dump(data,j_file)
 
 def aggregate_titles(subreddit):
     '''
