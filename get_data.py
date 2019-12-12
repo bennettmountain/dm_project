@@ -305,7 +305,7 @@ def create_spaghetti_plot():
     num=0
     # want to loop through each subreddit first then get the dates
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-        data = json.loads(json_file)
+        data = json.load(json_file)
         for sub in data["output_dateless"]:
             num+=1
             sub_scores = [] # should only need to scores_dates
