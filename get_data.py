@@ -209,6 +209,8 @@ def aggregate_titles(subreddit):
     '''
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
+        for sub in data["output_dateless"]["subreddit"]:
+            print(sub)
         aggregated_titles[subreddit] = " ".join(j[0] for j in data["output_dateless"][subreddit])
         
 def create_metric(subreddit):
@@ -477,6 +479,7 @@ def plot_wordclouds(subreddit):
 def main():
     open_files()
     print('done opening')
+    
     for subreddit in subreddit_list: # switched output for subreddit_list
         aggregate_titles(subreddit)
         create_metric(subreddit)
