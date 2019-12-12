@@ -477,9 +477,11 @@ def plot_wordclouds(subreddit):
 def main():
     open_files()
     print('done opening')
-    # for subreddit in subreddit_list: # switched output for subreddit_list
-    #     aggregate_titles(subreddit)
-    #     create_metric(subreddit)
+    for subreddit in subreddit_list: # switched output for subreddit_list
+        aggregate_titles(subreddit)
+        create_metric(subreddit)
+    print(scores)
+    print(scores_dates)
     # for subreddit in aggregated_titles:
     #     create_bigrams(subreddit)
     #     plot_wordclouds(subreddit)
