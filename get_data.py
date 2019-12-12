@@ -518,7 +518,7 @@ def main():
     model.fit(features, labels)
     print('  model.coef_.shape=',model.coef_.shape)
 
-    plot_matrix(model.coef_,'/home/bmountain/dm_project/eigenvectors.png'')
+    plot_matrix(model.coef_,'/home/bmountain/dm_project/eigenvectors.png')
 
     
 main()
