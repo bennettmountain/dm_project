@@ -23,13 +23,13 @@ import operator
 import string
 import gzip
 import math
-# import matplotlib.colors as colors
-# from sklearn.cluster import SpectralCoclustering
-# from sklearn.linear_model import LogisticRegression,LogisticRegressionCV
-# import scipy
+import matplotlib.colors as colors
+from sklearn.cluster import SpectralCoclustering
+from sklearn.linear_model import LogisticRegression,LogisticRegressionCV
+import scipy
 import datetime
-# import argparse
-'''
+import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--db',default='scrapedata.db')
 parser.add_argument('--domains',default=['thegoldenantlers.com','scrippsvoice.com','cmcforum.com','claremontindependent.com','tsl.news'],nargs='+')
@@ -44,7 +44,6 @@ parser.add_argument('--norm',type=int,default=2)
 parser.add_argument('--no_cocluster',action='store_true')
 parser.add_argument('--features',choices=['counts','tf','tfidf'],default='tfidf')
 args = parser.parse_args()
-'''
 
 subreddit_list = ['politics','uspolitics','AmericanPolitics','progressive','democrats','Liberal','Republican',
                     'Conservative','Libertarian']
@@ -64,6 +63,8 @@ scores = {}
 scores_dates = {} # of the form{'date_1':[('subreddit_1',score),('subreddit_2',score)],'date_2':...}
 aggregated_titles = {}
 bigram_count = {}
+text_for_matrix = []
+labels_for_matrix = []
 
 """
 def add_data(line, date):
@@ -106,7 +107,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2017-01.bz2']
+    files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         print('the current dates in the output are: ')
@@ -352,7 +353,7 @@ def create_bigrams(subreddit):
             bigram_count_mini[gram]+=1
     bigram_count[subreddit] = bigram_count_mini
 
-'''
+
 def plot_matrix(mat,filename,force_no_cocluster=False):
     print(datetime.datetime.now(),'plot_matrix')
     print('  mat.shape=',mat.shape)
@@ -393,66 +394,65 @@ def plot_matrix(mat,filename,force_no_cocluster=False):
     plt.tight_layout()
     plt.savefig(filename)
 
-def matrix_plot():
+def load_text_labels_for_matrix():
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.loads(json_file)
         subreddit_keys = data["output_dateless"]
-        text = []
-        labels = []
         for sub in subreddit_keys:
             posts = subreddit_keys[sub]
             for post in posts:
-                text.append(post[0])
-                labels.append(sub)
-        print(datetime.datetime.now(),'CountVectorizer()')
-        from sklearn.feature_extraction.text import CountVectorizer
-        count_vect = CountVectorizer(ngram_range=(1,args.ngrams),stop_words='english')
-        features = count_vect.fit_transform(text)
-        features = features.astype(np.float64)
-        all_feature_names = count_vect.get_feature_names()
-        
-        #not sure if i need these,
-        # also unsure about completely getting rid of anything to do with args
-        if args.features=='tf':
-            print(datetime.datetime.now(),'TF')
-            from sklearn.feature_extraction.text import TfidfTransformer
-            tf_transformer = TfidfTransformer(use_idf=False).fit(features)
-            features = tf_transformer.transform(features)
-            print('  features.shape=',features.shape)
+                text_for_matrix.append(post[0])
+                labels_for_matrix.append(sub)
 
-        if args.features=='tfidf':
-            print(datetime.datetime.now(),'TF-IDF')
-            from sklearn.feature_extraction.text import TfidfTransformer
-            tf_transformer = TfidfTransformer(use_idf=True).fit(features)
-            features = tf_transformer.transform(features)
-            print('  features.shape=',features.shape)
+    print(datetime.datetime.now(),'CountVectorizer()')
+    from sklearn.feature_extraction.text import CountVectorizer
+    count_vect = CountVectorizer(ngram_range=(1,args.ngrams),stop_words='english')
+    features = count_vect.fit_transform(text_for_matrix)
+    features = features.astype(np.float64)
+    all_feature_names = count_vect.get_feature_names()
+    
+    #not sure if i need these,
+    # also unsure about completely getting rid of anything to do with args
+    if args.features=='tf':
+        print(datetime.datetime.now(),'TF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=False).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
 
-        print(datetime.datetime.now(),'PCA')
-        if args.num_eig>0:
-            gram = np.dot(np.transpose(features),features)
-            print('  gram.shape=',gram.shape)
-            w, v = scipy.sparse.linalg.eigsh(gram,k=args.num_eig)
-            print('  w.shape=',w.shape)
-            print('  v.shape=',v.shape)
+    if args.features=='tfidf':
+        print(datetime.datetime.now(),'TF-IDF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=True).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
 
-            plt.figure(figsize=(20,10))
-            plt.bar(range(0,args.num_eig),w)
-            plt.savefig('img/mat/eigenvalues.png')
+    print(datetime.datetime.now(),'PCA')
+    if args.num_eig>0:
+        gram = np.dot(np.transpose(features),features)
+        print('  gram.shape=',gram.shape)
+        w, v = scipy.sparse.linalg.eigsh(gram,k=args.num_eig)
+        print('  w.shape=',w.shape)
+        print('  v.shape=',v.shape)
 
-            plot_matrix(np.transpose(v),filename='img/mat/eigenvectors.png') #,force_no_cocluster=True)
+        plt.figure(figsize=(20,10))
+        plt.bar(range(0,args.num_eig),w)
+        plt.savefig('img/mat/eigenvalues.png')
 
-        print(datetime.datetime.now(),'logreg')
-        model = LogisticRegression(
-                penalty=args.penalty,
-                C=args.C,
-                solver='liblinear',
-                class_weight='balanced',
-                multi_class='auto'
-                )
-        model.fit(features, labels)
-        print('  model.coef_.shape=',model.coef_.shape)
-        plot_matrix(model.coef_,f'/home/bmountain/dm_project/matrix.png')
-'''
+        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') #,force_no_cocluster=True)
+
+    print(datetime.datetime.now(),'logreg')
+    model = LogisticRegression(
+            penalty=args.penalty,
+            C=args.C,
+            solver='liblinear',
+            class_weight='balanced',
+            multi_class='auto'
+            )
+    model.fit(features, labels_for_matrix)
+    print('  model.coef_.shape=',model.coef_.shape)
+    plot_matrix(model.coef_,'/home/bmountain/dm_project/matrix.png')
+
 
 def plot_bigrams():
     for subreddit in bigram_count:
@@ -515,5 +515,44 @@ def main():
     create_scores_for_each_date()
     print(scores_dates)
     create_spaghetti_plot()
+    print(datetime.datetime.now(), ' plotting matrix')
+    
+    print(datetime.datetime.now(),'CountVectorizer()')
+    from sklearn.feature_extraction.text import CountVectorizer
+    count_vect = CountVectorizer(ngram_range=(1,args.ngrams),stop_words='english')
+    features = count_vect.fit_transform(text_for_matrix)
+    features = features.astype(np.float64)
+    all_feature_names = count_vect.get_feature_names()
+    
+    #not sure if i need these,
+    # also unsure about completely getting rid of anything to do with args
+    if args.features=='tf':
+        print(datetime.datetime.now(),'TF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=False).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
+
+    if args.features=='tfidf':
+        print(datetime.datetime.now(),'TF-IDF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=True).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
+
+    print(datetime.datetime.now(),'PCA')
+    if args.num_eig>0:
+        gram = np.dot(np.transpose(features),features)
+        print('  gram.shape=',gram.shape)
+        w, v = scipy.sparse.linalg.eigsh(gram,k=args.num_eig)
+        print('  w.shape=',w.shape)
+        print('  v.shape=',v.shape)
+
+        plt.figure(figsize=(20,10))
+        plt.bar(range(0,args.num_eig),w)
+        plt.savefig('img/mat/eigenvalues.png')
+
+        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,force_no_cocluster=True)
+
     
 main()
