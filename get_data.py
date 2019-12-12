@@ -141,13 +141,9 @@ def open_files():
                                             log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
                                             if sub in data["output_dateless"]:
                                                 data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                            if sub in data["output_dates"][date]:
-                                                print('putting post in output_dates')
-                                                data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
+                                                data["output_dates"][date][sub].append([post.get("title"), log_normalized_score])
                                             if sub not in data["output_dateless"]:
                                                 data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                            if sub not in data["output_dates"][date]:
-                                                print('putting first post in output_dates')
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
