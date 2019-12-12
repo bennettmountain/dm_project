@@ -264,7 +264,13 @@ def create_scores_for_each_date():
                     num_cons_words = 0
                     num_lib_words = 0
                     title_category_factor = 1
-                    for word in p[0]: # might need to do p[0][0]
+                    if type(p[0] == str):
+                        title_string = p[0]
+                        title_score = p[1]
+                    else:
+                        title_string = p[0][0]
+                        title_score = p[0][1]
+                    for word in title_string: 
                         if word in conservative_words:
                             cons_words+=1
                         elif word in liberal_words:
@@ -272,13 +278,13 @@ def create_scores_for_each_date():
                     if num_cons_words >= num_lib_words:
                         title_category_factor = -1
                     print(p[0])
-                    title = TextBlob(p[0])
+                    title = TextBlob(title_string)
                     print('blob created')
                     if title.sentiment.subjectivity > 0.0:
                         sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
                     else:
                         sntmnt = title.sentiment.polarity
-                    score += ((p[1] * 1.0) * sntmnt) * title_category_factor
+                    score += ((title_score * 1.0) * sntmnt) * title_category_factor
                 scores_dates[date].append((sub,score))
 
 def create_spaghetti_plot():
