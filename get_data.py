@@ -251,16 +251,10 @@ def create_scores_for_each_date():
         for date in dates:
             scores_dates[date] = []
             subreddit_dict = dates[date] # dict where each key is a sub
-            print('subreddit_dict is: ')
-            print(type(subreddit_dict))
             for sub in subreddit_dict:
                 posts = subreddit_dict[sub]
                 score = 0
-                print('posts is: ')
-                print(type(posts))
                 for p in posts:
-                    print('p is: ')
-                    print(type(p))
                     num_cons_words = 0
                     num_lib_words = 0
                     title_category_factor = 1
@@ -277,9 +271,7 @@ def create_scores_for_each_date():
                             lib_words+=1
                     if num_cons_words >= num_lib_words:
                         title_category_factor = -1
-                    print(p[0])
                     title = TextBlob(title_string)
-                    print('blob created')
                     if title.sentiment.subjectivity > 0.0:
                         sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
                     else:
