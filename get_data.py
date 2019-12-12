@@ -141,8 +141,8 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-                                data = json.load(json_file)
+                            with open("/home/bmountain/dm_project/output.json","w") as j_file:
+                                json.dump(data,j_file)
                             print(datetime.datetime.now())
                             print('done opening ' + i)
                     elif i.endswith('.xz'):
