@@ -404,55 +404,6 @@ def load_text_labels_for_matrix():
                 text_for_matrix.append(post[0])
                 labels_for_matrix.append(sub)
 
-    print(datetime.datetime.now(),'CountVectorizer()')
-    from sklearn.feature_extraction.text import CountVectorizer
-    count_vect = CountVectorizer(ngram_range=(1,args.ngrams),stop_words='english')
-    features = count_vect.fit_transform(text_for_matrix)
-    features = features.astype(np.float64)
-    all_feature_names = count_vect.get_feature_names()
-    
-    #not sure if i need these,
-    # also unsure about completely getting rid of anything to do with args
-    if args.features=='tf':
-        print(datetime.datetime.now(),'TF')
-        from sklearn.feature_extraction.text import TfidfTransformer
-        tf_transformer = TfidfTransformer(use_idf=False).fit(features)
-        features = tf_transformer.transform(features)
-        print('  features.shape=',features.shape)
-
-    if args.features=='tfidf':
-        print(datetime.datetime.now(),'TF-IDF')
-        from sklearn.feature_extraction.text import TfidfTransformer
-        tf_transformer = TfidfTransformer(use_idf=True).fit(features)
-        features = tf_transformer.transform(features)
-        print('  features.shape=',features.shape)
-
-    print(datetime.datetime.now(),'PCA')
-    if args.num_eig>0:
-        gram = np.dot(np.transpose(features),features)
-        print('  gram.shape=',gram.shape)
-        w, v = scipy.sparse.linalg.eigsh(gram,k=args.num_eig)
-        print('  w.shape=',w.shape)
-        print('  v.shape=',v.shape)
-
-        plt.figure(figsize=(20,10))
-        plt.bar(range(0,args.num_eig),w)
-        plt.savefig('img/mat/eigenvalues.png')
-
-        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') #,force_no_cocluster=True)
-
-    print(datetime.datetime.now(),'logreg')
-    model = LogisticRegression(
-            penalty=args.penalty,
-            C=args.C,
-            solver='liblinear',
-            class_weight='balanced',
-            multi_class='auto'
-            )
-    model.fit(features, labels_for_matrix)
-    print('  model.coef_.shape=',model.coef_.shape)
-    plot_matrix(model.coef_,'/home/bmountain/dm_project/matrix.png')
-
 
 def plot_bigrams():
     for subreddit in bigram_count:
@@ -515,8 +466,10 @@ def main():
     create_scores_for_each_date()
     print(scores_dates)
     create_spaghetti_plot()
+    load_text_labels_for_matrix()
     print(datetime.datetime.now(), ' plotting matrix')
     
+
     print(datetime.datetime.now(),'CountVectorizer()')
     from sklearn.feature_extraction.text import CountVectorizer
     count_vect = CountVectorizer(ngram_range=(1,args.ngrams),stop_words='english')
@@ -552,7 +505,20 @@ def main():
         plt.bar(range(0,args.num_eig),w)
         plt.savefig('img/mat/eigenvalues.png')
 
-        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,force_no_cocluster=True)
+        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
+    
+    print(datetime.datetime.now(),'logreg')
+    model = LogisticRegression(
+            penalty=args.penalty,
+            C=args.C,
+            solver='liblinear',
+            class_weight='balanced',
+            multi_class='auto'
+            )
+    model.fit(features, labels)
+    print('  model.coef_.shape=',model.coef_.shape)
+
+    plot_matrix(model.coef_,'/home/bmountain/dm_project/eigenvectors.png'')
 
     
 main()
