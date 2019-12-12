@@ -209,7 +209,7 @@ def aggregate_titles(subreddit):
     '''
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
-        for sub in data["output_dateless"]["subreddit"]:
+        for sub in data["output_dateless"]:
             print(sub)
         aggregated_titles[subreddit] = " ".join(j[0] for j in data["output_dateless"][subreddit])
         
