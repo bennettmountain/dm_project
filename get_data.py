@@ -124,7 +124,8 @@ def open_files():
                     # only know that the bz2's work so far. should unit test other file types
                     if i.endswith('.bz2'):
                         date = i[3:10]
-                        print('opening ' + i + 'at ' + datetime.datetime.now())
+                        print('opening ' + i + 'at: ')
+                        print(datetime.datetime.now())
                         with bz2.open(i, "r") as content:
                             date = i[3:10]
                             for line in content:
@@ -148,13 +149,15 @@ def open_files():
                                     pass
                             # with open("/home/bmountain/dm_project/output.json","w") as j_file:
                             #     json.dump(data,j_file)
-                            print('done opening ' + i + 'at ' + datetime.datetime.now())
+                            print('done opening ' + i + 'at: ')
+                            print(datetime.datetime.now())
                     elif i.endswith('.xz'):
                         if i.startswith('RS_v'):
                             date = i[6:13]
                         else:
                             date = i[3:10]
-                        print('opening  ' + i + 'at ' + datetime.datetime.now())
+                        print('opening  ' + i + 'at ')
+                        print(datetime.datetime.now)
                         with lzma.open(i, mode='rt') as content:
                             for line in content:
                                 try:
@@ -175,10 +178,12 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            print('done opening ' + i + 'at ' + datetime.datetime.now())
+                            print('done opening ' + i + 'at: ')
+                            print(datetime.datetime.now())
                     elif i.endswith('.gz'): 
                         date = i[3:10]
-                        print('opening  ' + i + 'at ' + datetime.datetime.now())
+                        print('opening ' + i + 'at: ')
+                        print(datetime.datetime.now())
                         with gzip.open(i) as content:
                             for line in content:
                                 try:
@@ -199,7 +204,8 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            print('done opening ' + i + 'at ' + datetime.datetime.now())
+                            print('done opening ' + i + 'at: ')
+                            print(datetime.datetime.now())
     with open("/home/bmountain/dm_project/output.json","w") as j_file:
         json.dump(data,j_file)
 
