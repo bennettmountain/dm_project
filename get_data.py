@@ -264,12 +264,8 @@ def create_scores_for_each_date():
                     num_cons_words = 0
                     num_lib_words = 0
                     title_category_factor = 1
-                    if type(p[0] == str):
+                    if type(p[0]) == str:
                         title_string = p[0]
-                        print('p is: ')
-                        print(p)
-                        print('p[0] is: ')
-                        print(p[0])
                         title_score = p[1]
                     else:
                         title_string = p[0][0]
