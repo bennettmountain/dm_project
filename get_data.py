@@ -108,7 +108,8 @@ def open_files():
     files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
-        print('the current dates in the output are: ' + data["dates"])
+        print('the current dates in the output are: ')
+        print(data["dates"])
         for i in files:
             # marks the file as being seen in the json
                 if i.startswith('RS_v'):
