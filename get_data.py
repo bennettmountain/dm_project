@@ -82,7 +82,7 @@ def add_data(line, date):
             sub = post.get("subreddit")
             if sub in subreddit_list:
                 if post.get("score") > 10: # arbitrary threshold
-                    log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                    log_normalized_score = math.log(post.get("score")) * 1.0 #/ subreddit_members.get(sub)
                     if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
                         data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
                         data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
@@ -104,14 +104,16 @@ def open_files():
     os.chdir('/data/files.pushshift.io/reddit/submissions')
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
-    # files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2011-01.bz2', 'RS_2012-01.bz2', 'RS_2013-01.bz2']
+    files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         for i in files:
             # marks the file as being seen in the json
-                if i not in data["dates"]: # check if the file was already parsed through
+                if i.startswith('RS_v'):
+                    file_date = i[6:13]
+                else:
                     file_date = i[3:10]
+                if file_date not in data["dates"]: # check if the file was already parsed through
                     data["dates"].append(file_date)
                     with open("/home/bmountain/dm_project/output.json","w") as j_file:
                         json.dump(data,j_file)
@@ -477,18 +479,21 @@ def plot_wordclouds(subreddit):
 def main():
     open_files()
     print('done opening')
-    
+    print(datetime.datetime.now(),' starting aggregating titles and creating metric for each subreddit')
     for subreddit in subreddit_list: # switched output for subreddit_list
         aggregate_titles(subreddit)
         create_metric(subreddit)
+    print(datetime.datetime.now(),' done aggregating titles and creating metric for each subreddit')
     print(scores)
     # for subreddit in aggregated_titles:
     #     create_bigrams(subreddit)
     #     plot_wordclouds(subreddit)
+    # print(datetime.datetime.now(),' done creating bigramsna plotting wordclouds for each subreddit')
     # plot_bigrams()
     # plot_metric()
-    create_scores_for_each_date()
-    print(scores_dates)
+    # print(datetime.datetime.now(),' create_scores_for_each_date()')
+    # create_scores_for_each_date()
+    # print(scores_dates)
     # create_spaghetti_plot()
     
 main()
