@@ -482,13 +482,13 @@ def main():
         aggregate_titles(subreddit)
         create_metric(subreddit)
     print(scores)
-    print(scores_dates)
     # for subreddit in aggregated_titles:
     #     create_bigrams(subreddit)
     #     plot_wordclouds(subreddit)
     # plot_bigrams()
     # plot_metric()
-    # create_scores_for_each_date()
+    create_scores_for_each_date()
+    print(scores_dates)
     # create_spaghetti_plot()
     
 main()
