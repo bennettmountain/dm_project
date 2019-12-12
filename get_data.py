@@ -1,6 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
-import json
+import simplejson as json
 import bz2
 import os
 import ast
@@ -27,7 +27,7 @@ import math
 # from sklearn.cluster import SpectralCoclustering
 # from sklearn.linear_model import LogisticRegression,LogisticRegressionCV
 # import scipy
-# import datetime
+ import datetime
 # import argparse
 '''
 parser = argparse.ArgumentParser()
@@ -78,6 +78,7 @@ def add_data(line, date):
             data = json.load(json_file)
             if date not in data["output_dates"]:
                 data["output_dates"][date] = {}
+                print('date added to output_dates')
             sub = post.get("subreddit")
             if sub in subreddit_list:
                 if post.get("score") > 10: # arbitrary threshold
@@ -103,7 +104,8 @@ def open_files():
     os.chdir('/data/files.pushshift.io/reddit/submissions')
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
-    files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
+    # files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
+    files = ['RS_2011-01.bz2']
     for i in files:
         # marks the file as being seen in the json
         with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
@@ -117,25 +119,33 @@ def open_files():
                 if i.endswith('.bz2'):
                     date = i[3:10]
                     print('opening  ' + i)
+                    print(datetime.datetime.now())
                     with bz2.open(i, "r") as content:
                         date = i[3:10]
                         for line in content:
                             add_data(line, date)
+                        print(datetime.datetime.now())
                         print('done opening ' + i)
                 elif i.endswith('.xz'):
                     if i.startswith('RS_v'):
                         date = i[6:13]
                     else:
                         date = i[3:10]
+                    print('opening  ' + i)
+                    print(datetime.datetime.now())
                     with lzma.open(i, mode='rt') as content:
                         for line in content:
                             add_data(line,date)
+                        print(datetime.datetime.now())
                         print('done opening ' + i)
                 elif i.endswith('.gz'): 
                     date = i[3:10]
+                    print('opening  ' + i)
+                    print(datetime.datetime.now())
                     with gzip.open(i) as content:
                         for line in content:
                             add_data(line,date)
+                        print(datetime.datetime.now())
                         print('done opening ' + i)
 
 def aggregate_titles(subreddit):
@@ -412,15 +422,15 @@ def plot_wordclouds(subreddit):
 def main():
     open_files()
     print('done opening')
-    for subreddit in subreddit_list: # switched output for subreddit_list
-        aggregate_titles(subreddit)
-        create_metric(subreddit)
-    for subreddit in aggregated_titles:
-        create_bigrams(subreddit)
-        plot_wordclouds(subreddit)
-    plot_bigrams()
-    plot_metric()
-    create_scores_for_each_date()
-    create_spaghetti_plot()
+    # for subreddit in subreddit_list: # switched output for subreddit_list
+    #     aggregate_titles(subreddit)
+    #     create_metric(subreddit)
+    # for subreddit in aggregated_titles:
+    #     create_bigrams(subreddit)
+    #     plot_wordclouds(subreddit)
+    # plot_bigrams()
+    # plot_metric()
+    # create_scores_for_each_date()
+    # create_spaghetti_plot()
     
 main()
