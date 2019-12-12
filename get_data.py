@@ -106,7 +106,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2011-01.bz2']
+    files = ['RS_2011-01.bz2', 'RS_2015-01.gz']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         print('the current dates in the output are: ')
