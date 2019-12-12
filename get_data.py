@@ -65,6 +65,7 @@ scores_dates = {} # of the form{'date_1':[('subreddit_1',score),('subreddit_2',s
 aggregated_titles = {}
 bigram_count = {}
 
+"""
 def add_data(line, date):
     '''
     TODO: add everything to the correct spots in the json
@@ -93,7 +94,7 @@ def add_data(line, date):
             json.dump(data,j_file)
     except:
         pass
-
+"""
     
 
 def open_files():
@@ -107,6 +108,7 @@ def open_files():
     files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
+        print('the current dates in the output are: ' + data["dates"])
         for i in files:
             # marks the file as being seen in the json
                 if i.startswith('RS_v'):
@@ -120,8 +122,7 @@ def open_files():
                     # only know that the bz2's work so far. should unit test other file types
                     if i.endswith('.bz2'):
                         date = i[3:10]
-                        print('opening  ' + i)
-                        print(datetime.datetime.now())
+                        print('opening ' + i + 'at ' + datetime.datetime.now())
                         with bz2.open(i, "r") as content:
                             date = i[3:10]
                             for line in content:
@@ -145,15 +146,13 @@ def open_files():
                                     pass
                             # with open("/home/bmountain/dm_project/output.json","w") as j_file:
                             #     json.dump(data,j_file)
-                            print(datetime.datetime.now())
-                            print('done opening ' + i)
+                            print('done opening ' + i + 'at ' + datetime.datetime.now())
                     elif i.endswith('.xz'):
                         if i.startswith('RS_v'):
                             date = i[6:13]
                         else:
                             date = i[3:10]
-                        print('opening  ' + i)
-                        print(datetime.datetime.now())
+                        print('opening  ' + i + 'at ' + datetime.datetime.now())
                         with lzma.open(i, mode='rt') as content:
                             for line in content:
                                 try:
@@ -174,12 +173,10 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            print(datetime.datetime.now())
-                            print('done opening ' + i)
+                            print('done opening ' + i + 'at ' + datetime.datetime.now())
                     elif i.endswith('.gz'): 
                         date = i[3:10]
-                        print('opening  ' + i)
-                        print(datetime.datetime.now())
+                        print('opening  ' + i + 'at ' + datetime.datetime.now())
                         with gzip.open(i) as content:
                             for line in content:
                                 try:
@@ -200,8 +197,7 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            print(datetime.datetime.now())
-                            print('done opening ' + i)
+                            print('done opening ' + i + 'at ' + datetime.datetime.now())
     with open("/home/bmountain/dm_project/output.json","w") as j_file:
         json.dump(data,j_file)
 
@@ -451,7 +447,7 @@ def plot_bigrams():
 
 def plot_metric():
     plt.bar(range(len(scores)), list(scores.values()), align='center')
-    plt.xticks(range(len(scores)), list(scores.keys()), rotation = 'vertical')
+    plt.xticks(range(len(scores)), list(scores.keys()), rotation = 70)
     plt.xlabel('Subreddits')
     plt.ylabel('Bias')
     plt.title('Subreddit Bias Scores')
@@ -478,22 +474,22 @@ def plot_wordclouds(subreddit):
 
 def main():
     open_files()
-    print('done opening')
+    print('done opening all files')
     print(datetime.datetime.now(),' starting aggregating titles and creating metric for each subreddit')
     for subreddit in subreddit_list: # switched output for subreddit_list
         aggregate_titles(subreddit)
         create_metric(subreddit)
     print(datetime.datetime.now(),' done aggregating titles and creating metric for each subreddit')
     print(scores)
-    # for subreddit in aggregated_titles:
-    #     create_bigrams(subreddit)
-    #     plot_wordclouds(subreddit)
-    # print(datetime.datetime.now(),' done creating bigramsna plotting wordclouds for each subreddit')
-    # plot_bigrams()
-    # plot_metric()
-    # print(datetime.datetime.now(),' create_scores_for_each_date()')
-    # create_scores_for_each_date()
-    # print(scores_dates)
+    for subreddit in aggregated_titles:
+        create_bigrams(subreddit)
+        plot_wordclouds(subreddit)
+    print(datetime.datetime.now(),' done creating bigrams and plotting wordclouds for each subreddit')
+    plot_bigrams()
+    plot_metric()
+    print(datetime.datetime.now(),' create_scores_for_each_date()')
+    create_scores_for_each_date()
+    print(scores_dates)
     # create_spaghetti_plot()
     
 main()
