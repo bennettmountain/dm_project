@@ -124,7 +124,6 @@ def open_files():
                             date = i[3:10]
                             for line in content:
                                 try:
-                                    print('reached try')
                                     post = json.loads(line)
                                     #data = json.load(json_file)
                                     if date not in data["output_dates"]:
