@@ -264,7 +264,7 @@ def create_scores_for_each_date():
                     num_cons_words = 0
                     num_lib_words = 0
                     title_category_factor = 1
-                    for word in p[0]:
+                    for word in p[0]: # might need to do p[0][0]
                         if word in conservative_words:
                             cons_words+=1
                         elif word in liberal_words:
@@ -273,6 +273,7 @@ def create_scores_for_each_date():
                         title_category_factor = -1
                     print(p[0])
                     title = TextBlob(p[0])
+                    print('blob created')
                     if title.sentiment.subjectivity > 0.0:
                         sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
                     else:
