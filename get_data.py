@@ -106,7 +106,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2016-01.gz', 'RS_2017-01.bz2','RS_2018-01.xz', 'RS_2019-01.gz']
+    files = ['RS_2016-01.gz']
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
         data = json.load(json_file)
         print('the current dates in the output are: ')
@@ -124,7 +124,7 @@ def open_files():
                     # only know that the bz2's work so far. should unit test other file types
                     if i.endswith('.bz2'):
                         date = i[3:10]
-                        print('opening ' + i + 'at: ')
+                        print('opening ' + i + ' at: ')
                         print(datetime.datetime.now())
                         with bz2.open(i, "r") as content:
                             date = i[3:10]
@@ -149,37 +149,40 @@ def open_files():
                                     pass
                             # with open("/home/bmountain/dm_project/output.json","w") as j_file:
                             #     json.dump(data,j_file)
-                            print('done opening ' + i + 'at: ')
+                            print('done opening ' + i + ' at: ')
                             print(datetime.datetime.now())
                     elif i.endswith('.xz'):
                         if i.startswith('RS_v'):
                             date = i[6:13]
                         else:
                             date = i[3:10]
-                        print('opening  ' + i + 'at ')
-                        print(datetime.datetime.now)
+                        print('opening  ' + i + ' at: ')
+                        print(datetime.datetime.now())
                         with lzma.open(i, mode='rt') as content:
                             for line in content:
-                                post = json.loads(line)
-                                #data = json.load(json_file)
-                                if date not in data["output_dates"]:
-                                    data["output_dates"][date] = {}
-                                    print('date added to output_dates')
-                                sub = post.get("subreddit")
-                                if sub in subreddit_list:
-                                    if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
-                                        if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
-                                            data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                            data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
-                                        else:
-                                            data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                            data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-                            print('done opening ' + i + 'at: ')
+                                try:
+                                    post = json.loads(line)
+                                    #data = json.load(json_file)
+                                    if date not in data["output_dates"]:
+                                        data["output_dates"][date] = {}
+                                        print('date added to output_dates')
+                                    sub = post.get("subreddit")
+                                    if sub in subreddit_list:
+                                        if post.get("score") > 10: # arbitrary threshold
+                                            log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                            if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
+                                                data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
+                                                data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
+                                            else:
+                                                data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
+                                                data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
+                                except:
+                                    pass
+                            print('done opening ' + i + ' at: ')
                             print(datetime.datetime.now())
                     elif i.endswith('.gz'): 
                         date = i[3:10]
-                        print('opening ' + i + 'at: ')
+                        print('opening ' + i + ' at: ')
                         print(datetime.datetime.now())
                         with gzip.open(i) as content:
                             for line in content:
@@ -201,7 +204,7 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            print('done opening ' + i + 'at: ')
+                            print('done opening ' + i + ' at: ')
                             print(datetime.datetime.now())
     with open("/home/bmountain/dm_project/output.json","w") as j_file:
         json.dump(data,j_file)
@@ -388,6 +391,7 @@ def plot_matrix(mat,filename,force_no_cocluster=False):
     plt.savefig(filename)
 
 def matrix_plot():
+    for sub in 
     text = [ row[2] for row in rows ]
     labels = [ row[3] for row in rows ]
 
