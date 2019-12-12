@@ -160,24 +160,21 @@ def open_files():
                         print(datetime.datetime.now)
                         with lzma.open(i, mode='rt') as content:
                             for line in content:
-                                try:
-                                    post = json.loads(line)
-                                    #data = json.load(json_file)
-                                    if date not in data["output_dates"]:
-                                        data["output_dates"][date] = {}
-                                        print('date added to output_dates')
-                                    sub = post.get("subreddit")
-                                    if sub in subreddit_list:
-                                        if post.get("score") > 10: # arbitrary threshold
-                                            log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
-                                            if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
-                                                data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                                data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
-                                            else:
-                                                data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                                data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-                                except:
-                                    pass
+                                post = json.loads(line)
+                                #data = json.load(json_file)
+                                if date not in data["output_dates"]:
+                                    data["output_dates"][date] = {}
+                                    print('date added to output_dates')
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
+                                            data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
+                                            data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
+                                        else:
+                                            data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
+                                            data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                             print('done opening ' + i + 'at: ')
                             print(datetime.datetime.now())
                     elif i.endswith('.gz'): 
