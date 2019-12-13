@@ -65,6 +65,13 @@ aggregated_titles = {}
 bigram_count = {}
 text_for_matrix = []
 labels_for_matrix = []
+model = LogisticRegression(
+            penalty=args.penalty,
+            C=args.C,
+            solver='liblinear',
+            class_weight='balanced',
+            multi_class='auto'
+            )
 
 """
 def add_data(line, date):
@@ -354,7 +361,7 @@ def create_bigrams(subreddit):
     bigram_count[subreddit] = bigram_count_mini
 
 
-def plot_matrix(mat,filename,force_no_cocluster=False):
+def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
     print(datetime.datetime.now(),'plot_matrix')
     print('  mat.shape=',mat.shape)
     plt.figure(figsize=(10,4))
@@ -364,6 +371,7 @@ def plot_matrix(mat,filename,force_no_cocluster=False):
         l2_norms=np.linalg.norm(mat,axis=0,ord=args.norm)
         indices = l2_norms.argsort()[-args.num_words:]
         mat = mat[:,indices]
+        all_feature_names = all_feature_names_arg
         words = [ all_feature_names[i] for i in indices ]
         plt.xticks(ticks=range(0,len(words)),labels=words,rotation=-90)
 
@@ -505,20 +513,14 @@ def main():
         plt.bar(range(0,args.num_eig),w)
         plt.savefig('/home/bmountain/dm_project/eigenvalues.png')
 
-        plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
+        plot_matrix(all_feature_names,np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
     
     print(datetime.datetime.now(),'logreg')
-    model = LogisticRegression(
-            penalty=args.penalty,
-            C=args.C,
-            solver='liblinear',
-            class_weight='balanced',
-            multi_class='auto'
-            )
-    model.fit(features, labels)
+    
+    model.fit(features, labels_for_matrix)
     print('  model.coef_.shape=',model.coef_.shape)
 
-    plot_matrix(model.coef_,'/home/bmountain/dm_project/matrix.png')
+    plot_matrix(all_feature_names,model.coef_,'/home/bmountain/dm_project/matrix.png')
 
     
 main()
