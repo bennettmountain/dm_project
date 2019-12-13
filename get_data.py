@@ -64,7 +64,7 @@ scores_dates = {} # of the form{'date_1':[('subreddit_1',score),('subreddit_2',s
 aggregated_titles = {}
 bigram_count = {}
 text_for_matrix = []
-labels_for_matrix = []
+labels = []
 model = LogisticRegression(
             penalty=args.penalty,
             C=args.C,
@@ -379,7 +379,7 @@ def load_text_labels_for_matrix():
             posts = subreddit_keys[sub]
             for post in posts:
                 text_for_matrix.append(post[0])
-                labels_for_matrix.append(sub)
+                labels.append(sub)
 
 
 def plot_bigrams():
@@ -456,19 +456,19 @@ def main():
     
     #not sure if i need these,
     # also unsure about completely getting rid of anything to do with args
-    # if args.features=='tf':
-    #     print(datetime.datetime.now(),'TF')
-    #     from sklearn.feature_extraction.text import TfidfTransformer
-    #     tf_transformer = TfidfTransformer(use_idf=False).fit(features)
-    #     features = tf_transformer.transform(features)
-    #     print('  features.shape=',features.shape)
+    if args.features=='tf':
+        print(datetime.datetime.now(),'TF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=False).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
 
-    # if args.features=='tfidf':
-    #     print(datetime.datetime.now(),'TF-IDF')
-    #     from sklearn.feature_extraction.text import TfidfTransformer
-    #     tf_transformer = TfidfTransformer(use_idf=True).fit(features)
-    #     features = tf_transformer.transform(features)
-    #     print('  features.shape=',features.shape)
+    if args.features=='tfidf':
+        print(datetime.datetime.now(),'TF-IDF')
+        from sklearn.feature_extraction.text import TfidfTransformer
+        tf_transformer = TfidfTransformer(use_idf=True).fit(features)
+        features = tf_transformer.transform(features)
+        print('  features.shape=',features.shape)
 
     print(datetime.datetime.now(),'PCA')
     if args.num_eig>0:
@@ -486,7 +486,7 @@ def main():
     
     print(datetime.datetime.now(),'logreg')
     
-    model.fit(features, labels_for_matrix)
+    model.fit(features, labels)
     print('  model.coef_.shape=',model.coef_.shape)
 
     plot_matrix(all_feature_names,model.coef_,'/home/bmountain/dm_project/matrix.png')
