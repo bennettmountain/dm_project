@@ -96,8 +96,6 @@ def open_files():
                     file_date = i[3:10]
                 if file_date not in data["dates"]: # check if the file was already parsed through
                     data["dates"].append(file_date)
-                    with open("/home/bmountain/dm_project/output.json","w") as j_file:
-                        json.dump(data,j_file)
                     # only know that the bz2's work so far. should unit test other file types
                     if i.endswith('.bz2'):
                         date = i[3:10]
@@ -124,8 +122,6 @@ def open_files():
                                                 data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
                                 except:
                                     pass
-                            # with open("/home/bmountain/dm_project/output.json","w") as j_file:
-                            #     json.dump(data,j_file)
                             print('done opening ' + i + ' at: ')
                             print(datetime.datetime.now())
                     elif i.endswith('.xz'):
