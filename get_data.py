@@ -380,7 +380,7 @@ def load_text_labels_for_matrix():
             for post in posts:
                 text_for_matrix.append(post[0])
                 labels.append(sub)
-        print('first sub in labels is: ' + labels[0])
+        print('first sub in labels is: ' + labels[1])
 
 
 def plot_bigrams():
