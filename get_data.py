@@ -456,19 +456,19 @@ def main():
     
     #not sure if i need these,
     # also unsure about completely getting rid of anything to do with args
-    if args.features=='tf':
-        print(datetime.datetime.now(),'TF')
-        from sklearn.feature_extraction.text import TfidfTransformer
-        tf_transformer = TfidfTransformer(use_idf=False).fit(features)
-        features = tf_transformer.transform(features)
-        print('  features.shape=',features.shape)
+    # if args.features=='tf':
+    #     print(datetime.datetime.now(),'TF')
+    #     from sklearn.feature_extraction.text import TfidfTransformer
+    #     tf_transformer = TfidfTransformer(use_idf=False).fit(features)
+    #     features = tf_transformer.transform(features)
+    #     print('  features.shape=',features.shape)
 
-    if args.features=='tfidf':
-        print(datetime.datetime.now(),'TF-IDF')
-        from sklearn.feature_extraction.text import TfidfTransformer
-        tf_transformer = TfidfTransformer(use_idf=True).fit(features)
-        features = tf_transformer.transform(features)
-        print('  features.shape=',features.shape)
+    # if args.features=='tfidf':
+    #     print(datetime.datetime.now(),'TF-IDF')
+    #     from sklearn.feature_extraction.text import TfidfTransformer
+    #     tf_transformer = TfidfTransformer(use_idf=True).fit(features)
+    #     features = tf_transformer.transform(features)
+    #     print('  features.shape=',features.shape)
 
     print(datetime.datetime.now(),'PCA')
     if args.num_eig>0:
