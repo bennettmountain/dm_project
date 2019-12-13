@@ -503,7 +503,7 @@ def main():
 
         plt.figure(figsize=(20,10))
         plt.bar(range(0,args.num_eig),w)
-        plt.savefig('img/mat/eigenvalues.png')
+        plt.savefig('/home/bmountain/dm_project/eigenvalues.png')
 
         plot_matrix(np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
     
@@ -518,7 +518,7 @@ def main():
     model.fit(features, labels)
     print('  model.coef_.shape=',model.coef_.shape)
 
-    plot_matrix(model.coef_,'/home/bmountain/dm_project/eigenvectors.png')
+    plot_matrix(model.coef_,'/home/bmountain/dm_project/matrix.png')
 
     
 main()
