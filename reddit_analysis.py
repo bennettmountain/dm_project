@@ -109,8 +109,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 print('reached before dumping to master')
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
