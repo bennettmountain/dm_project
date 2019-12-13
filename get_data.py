@@ -31,8 +31,6 @@ import datetime
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--db',default='scrapedata.db')
-parser.add_argument('--domains',default=['thegoldenantlers.com','scrippsvoice.com','cmcforum.com','claremontindependent.com','tsl.news'],nargs='+')
 parser.add_argument('--ngrams',type=int,default=1)
 parser.add_argument('--limit')
 parser.add_argument('--num_words',type=int,default=20)
@@ -83,7 +81,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2011-01.bz2', 'RS_2012-01.bz2']
+    files = ['RS_2017-01.bz2']
     # with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
     #     data = json.load(json_file)
         # print('the current dates in the output are: ')
