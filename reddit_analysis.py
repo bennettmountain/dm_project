@@ -100,7 +100,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2011-01.bz2']
+    files = ['RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     for i in files:
         year = i[3:7]
         if year == '2011':
@@ -127,22 +127,34 @@ def open_files():
                                             master_data[sub] = [[post.get("title"), log_normalized_score]]
                             except:
                                 pass
-                print('reached before dumping to master')
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
-                    print('just dumped to master')
-            print('reached before dumping to 2011')
             with open("/home/bmountain/dm_project/output_2011.json","w") as j_file:
                 json.dump(data,j_file)
-                print('just dumped to 2011')
         if year == '2012':
             with open("/home/bmountain/dm_project/output_2012.json", "r+") as json_date_file:
                 data = json.load(json_date_file)
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2012.json","w") as j_file:
@@ -153,8 +165,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2013.json","w") as j_file:
@@ -165,8 +193,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2014.json","w") as j_file:
@@ -177,8 +221,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with gzip.open(i) as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2015.json","w") as j_file:
@@ -189,8 +249,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with gzip.open(i) as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2016.json","w") as j_file:
@@ -201,8 +277,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2017.json","w") as j_file:
@@ -213,8 +305,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with lzma.open(i, mode='rt') as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2018.json","w") as j_file:
@@ -225,8 +333,24 @@ def open_files():
                 with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
                     master_data = json.load(json_master)
                     with gzip.open(i) as content:
-                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
-                        populate_dicts(content)
+                        print(datetime.datetime.now(), 'opening ' + i)
+                        for line in content:
+                            try:
+                                post = json.loads(line)
+                                sub = post.get("subreddit")
+                                if sub in subreddit_list:
+                                    if post.get("score") > 10: # arbitrary threshold
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        if sub in data:
+                                            data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in data:
+                                            data[sub] = [[post.get("title"), log_normalized_score]]
+                                        if sub in master_data:
+                                            master_data[sub].append([post.get("title"), log_normalized_score])
+                                        if sub not in master_data:
+                                            master_data[sub] = [[post.get("title"), log_normalized_score]]
+                            except:
+                                pass
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
             with open("/home/bmountain/dm_project/output_2019.json","w") as j_file:
