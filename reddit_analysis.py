@@ -111,10 +111,14 @@ def open_files():
                     with bz2.open(i, "r") as content:
                         print(datetime.datetime.now(), 'opening ' + i + ' at: ')
                         populate_dicts(content)
+                print('reached before dumping to master')
                 with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
                     json.dump(master_data,master_write)
+                    print('just dumped to master')
+            print('reached before dumping to 2011')
             with open("/home/bmountain/dm_project/output_2011.json","w") as j_file:
                 json.dump(data,j_file)
+                print('just dumped to 2011')
         if year == '2012':
             with open("/home/bmountain/dm_project/output_2012.json", "r+") as json_date_file:
                 data = json.load(json_date_file)
