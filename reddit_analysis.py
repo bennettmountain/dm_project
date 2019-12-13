@@ -447,7 +447,7 @@ def create_spaghetti_plot():
     plt.style.use('seaborn-darkgrid')
     
     # create a color palette
-    palette = plt.get_cmap('Set1')
+    palette = plt.get_cmap('tab10')
     
     # multiple line plot
     num=0
@@ -465,7 +465,7 @@ def create_spaghetti_plot():
                     if tup[0] == sub: # found the corresponding subreddit
                         sub_scores.append(tup[1])
                 
-            plt.xticks(range(len(date_list)), date_list)
+            plt.xticks(range(len(date_list)), date_list, rotation=70)
             plt.plot(range(len(date_list)), sub_scores, marker='', color=palette(num), linewidth=1, label=sub)
     
     # Add legend
@@ -473,7 +473,7 @@ def create_spaghetti_plot():
     
     # Add titles
     plt.title("Suberddit Bias Over Time")
-    plt.xlabel("Date", rotation = 70)
+    plt.xlabel("Date")
     plt.ylabel("Score")
     plt.savefig('/home/bmountain/dm_project/spaghetti_plot.png', bbox_inches = "tight")
     plt.clf()
