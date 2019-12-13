@@ -68,42 +68,11 @@ labels_for_matrix = []
 model = LogisticRegression(
             penalty=args.penalty,
             C=args.C,
-            solver='liblinear',
+            solver='lbfgs',
             class_weight='balanced',
-            multi_class='auto'
+            multi_class='multinomial'
             )
-
-"""
-def add_data(line, date):
-    '''
-    TODO: add everything to the correct spots in the json
-    Parses through all the lines in a file (where each line in the file is a dict),
-    creates a list containing the title and score of the post, and adds it to the
-    list of lists in its specified spot in two output dicts.
-    '''
-    try:
-        post = json.loads(line)
-        with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-            data = json.load(json_file)
-            if date not in data["output_dates"]:
-                data["output_dates"][date] = {}
-                print('date added to output_dates')
-            sub = post.get("subreddit")
-            if sub in subreddit_list:
-                if post.get("score") > 10: # arbitrary threshold
-                    log_normalized_score = math.log(post.get("score")) * 1.0 #/ subreddit_members.get(sub)
-                    if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
-                        data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                        data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
-                    else:
-                        data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                        data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-        with open("/home/bmountain/dm_project/output.json","w") as j_file:
-            json.dump(data,j_file)
-    except:
-        pass
-"""
-    
+ 
 
 def open_files():
     '''
