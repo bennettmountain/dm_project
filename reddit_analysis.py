@@ -508,7 +508,7 @@ def create_bigrams(subreddit):
     bigram_count[subreddit] = bigram_count_mini
 
 
-def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
+def plot_matrix(model,all_feature_names_arg,mat,filename,force_no_cocluster=False):
     print(datetime.datetime.now(),'plot_matrix')
     print('  mat.shape=',mat.shape)
     plt.figure(figsize=(10,4))
@@ -666,7 +666,7 @@ def main():
     model.fit(features, labels)
     print('  model.coef_.shape=',model.coef_.shape)
 
-    plot_matrix(all_feature_names,model.coef_,'/home/bmountain/dm_project/matrix.png')
+    plot_matrix(model,all_feature_names,model.coef_,'/home/bmountain/dm_project/matrix.png')
 
     
 main()
