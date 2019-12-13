@@ -81,7 +81,7 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2017-01.bz2']
+    files = ['RS_2018-01.xz']
     # with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
     #     data = json.load(json_file)
         # print('the current dates in the output are: ')
@@ -196,7 +196,9 @@ def create_metric(subreddit):
         data = json.load(json_file)
         post_list_dateless = data["output_dateless"][subreddit]
         scores[subreddit] = 0
+        num_posts = 0
         for j in post_list_dateless:
+            num_posts+=1
             num_cons_words = 0
             num_lib_words = 0
             title_category_factor = 1 # 1 if title is about a liberal topic, -1 if about conservative topic
@@ -215,6 +217,8 @@ def create_metric(subreddit):
             else:
                 sntmnt = title.sentiment.polarity
             scores[subreddit] += ((j[1] * 1.0) * sntmnt) * title_category_factor
+        for sub in scores: # normalize score by dividing by the number of posts in the sub.
+            scores[sub] /= (num_posts*1.0)
 
 def create_scores_for_each_date():
     '''
