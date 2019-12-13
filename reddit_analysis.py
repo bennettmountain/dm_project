@@ -34,7 +34,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--ngrams',type=int,default=1)
 parser.add_argument('--limit')
 parser.add_argument('--num_words',type=int,default=20)
-parser.add_argument('--num_eig',type=int,default=10)
+parser.add_argument('--num_eig',type=int,default=0)
 parser.add_argument('--penalty',type=str,default='l2')
 parser.add_argument('--C',type=float,default=1.0)
 parser.add_argument('--no_biggest_words',action='store_true')
@@ -63,13 +63,6 @@ aggregated_titles = {}
 bigram_count = {}
 text_for_matrix = []
 labels = []
-model = lm.LogisticRegression(
-            penalty=args.penalty,
-            C=args.C,
-            solver='lbfgs',
-            class_weight='balanced',
-            multi_class='multinomial'
-            )
  
 def populate_dicts(f):
     content = f
@@ -648,6 +641,13 @@ def main():
         print('  features.shape=',features.shape)
 
     print(datetime.datetime.now(),'PCA')
+    model = lm.LogisticRegression(
+            penalty=args.penalty,
+            C=args.C,
+            solver='lbfgs',
+            class_weight='balanced',
+            multi_class='multinomial'
+            )
     if args.num_eig>0:
         gram = np.dot(np.transpose(features),features)
         print('  gram.shape=',gram.shape)
@@ -659,13 +659,15 @@ def main():
         plt.bar(range(0,args.num_eig),w)
         plt.savefig('/home/bmountain/dm_project/eigenvalues.png')
 
-        plot_matrix(all_feature_names,np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
+        plot_matrix(model,all_feature_names,np.transpose(v),filename='/home/bmountain/dm_project/eigenvectors.png') ,#force_no_cocluster=True)
     
     print(datetime.datetime.now(),'logreg')
+    
     
     model.fit(features, labels)
     print('  model.coef_.shape=',model.coef_.shape)
 
+    
     plot_matrix(model,all_feature_names,model.coef_,'/home/bmountain/dm_project/matrix.png')
 
     
