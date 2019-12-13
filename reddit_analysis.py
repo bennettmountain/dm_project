@@ -534,7 +534,7 @@ def plot_matrix(model,all_feature_names_arg,mat,filename,force_no_cocluster=Fals
             norm=colors.SymLogNorm(linthresh=0.03, linscale=0.03, vmin=-1e6, vmax=1e6)
             )
 
-    plt.yticks(ticks=[0,1,2,3,4,5,6,7,8],labels=model.classes_)
+    plt.yticks([0,1,2,3,4,5,6,7,8],model.classes_)
     plt.ylim(-0.5,8.5)
 
     plt.colorbar()
