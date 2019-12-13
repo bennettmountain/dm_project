@@ -396,7 +396,7 @@ def plot_matrix(mat,filename,force_no_cocluster=False):
 
 def load_text_labels_for_matrix():
     with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-        data = json.loads(json_file)
+        data = json.load(json_file)
         subreddit_keys = data["output_dateless"]
         for sub in subreddit_keys:
             posts = subreddit_keys[sub]
