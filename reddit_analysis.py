@@ -102,7 +102,7 @@ def open_files():
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     files = ['RS_2011-01.bz2']
     for i in files:
-        year = i[3:17]
+        year = i[3:7]
         if year == '2011':
             with open("/home/bmountain/dm_project/output_2011.json", "r+") as json_date_file:
                 data = json.load(json_date_file)
