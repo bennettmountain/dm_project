@@ -373,7 +373,7 @@ def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
         mat = mat[:,indices]
         all_feature_names = all_feature_names_arg
         words = [ all_feature_names[i] for i in indices ]
-        plt.xticks(ticks=range(0,len(words)),labels=words,rotation=-90)
+        plt.xticks(range(0,len(words)),words,rotation=-90)
 
     # cocluster the axes
     if not args.no_cocluster and not force_no_cocluster:
@@ -382,7 +382,7 @@ def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
         mat = mat[:,col_indices]
         try:
             words = [ words[i] for i in col_indices ]
-            plt.xticks(ticks=range(0,len(words)),labels=words,rotation=-90)
+            plt.xticks(range(0,len(words)),words,rotation=-90)
         except:
             pass
 
