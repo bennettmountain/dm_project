@@ -541,8 +541,8 @@ def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
             norm=colors.SymLogNorm(linthresh=0.03, linscale=0.03, vmin=-1e6, vmax=1e6)
             )
 
-    plt.yticks(ticks=[0,1,2,3,4],labels=model.classes_)
-    plt.ylim(-0.5,4.5)
+    plt.yticks(ticks=[0,1,2,3,4,5,6,7,8],labels=model.classes_)
+    plt.ylim(-0.5,8.5)
 
     plt.colorbar()
     plt.tight_layout()
