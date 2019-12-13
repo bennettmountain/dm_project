@@ -25,7 +25,7 @@ import gzip
 import math
 import matplotlib.colors as colors
 from sklearn.cluster import SpectralCoclustering
-from sklearn.linear_model import LogisticRegression,LogisticRegressionCV
+import sklearn.linear_model as lm
 import scipy
 import datetime
 import argparse
@@ -63,7 +63,7 @@ aggregated_titles = {}
 bigram_count = {}
 text_for_matrix = []
 labels = []
-model = LogisticRegression(
+model = lm.LogisticRegression(
             penalty=args.penalty,
             C=args.C,
             solver='lbfgs',
