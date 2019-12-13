@@ -51,7 +51,7 @@ subreddit_members = {'politics':5.5E6,'uspolitics':1.65E4,'AmericanPolitics':1.1
                         
 # get more conservative and liberal words???
 liberal_words = ["progressive","Biden","universal basic income","AOC", "Ocasio-Cortez", "liberal", "democrat", "Obama", "Clinton", "Sanders", 
-"green new deal", "leftist", "Yang", "Warren", "Kamala", "medicare for all"]
+"green new deal", "leftist", "Yang", "Warren", "Kamala", "medicare for all", "obamacare", "pro choice"]
 
 conservative_words = ["Cheney","Shapiro","Koch","Paul Ryan","Rand Paul","Bush","Palin","Mattis","McCain","Romney", "Trump",
 "Cruz", "republican", "Kushner", "conservative", "GOP", "Pence"]
@@ -71,6 +71,25 @@ model = LogisticRegression(
             multi_class='multinomial'
             )
  
+def populate_dicts(f):
+    content = f
+    for line in content:
+        try:
+            post = json.loads(line)
+            sub = post.get("subreddit")
+            if sub in subreddit_list:
+                if post.get("score") > 10: # arbitrary threshold
+                    log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                    if sub in data:
+                        data[sub].append([post.get("title"), log_normalized_score])
+                    if sub not in data:
+                        data[sub] = [[post.get("title"), log_normalized_score]]
+                    if sub in master_data:
+                        master_data[sub].append([post.get("title"), log_normalized_score])
+                    if sub not in master_data:
+                        master_data[sub] = [[post.get("title"), log_normalized_score]]
+        except:
+            pass
 
 def open_files():
     '''
@@ -81,123 +100,138 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2019-01.gz']
-    # with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-    #     data = json.load(json_file)
-        # print('the current dates in the output are: ')
-        # print(data["dates"])
+    files = ['RS_2011-01.bz2']
     for i in files:
-        with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-            data = json.load(json_file)
-            if i.startswith('RS_v'):
-                file_date = i[6:13]
-            else:
-                file_date = i[3:10]
-            if file_date not in data["dates"]: # check if the file was already parsed through
-                data["dates"].append(file_date)
-                # only know that the bz2's work so far. should unit test other file types
-                if i.endswith('.bz2'):
-                    date = i[3:10]
-                    print('opening ' + i + ' at: ')
-                    print(datetime.datetime.now())
+        year = i[3:17]
+        if year == '2011':
+            with open("/home/bmountain/dm_project/output_2011.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
                     with bz2.open(i, "r") as content:
-                        date = i[3:10]
-                        for line in content:
-                            try:
-                                post = json.loads(line)
-                                if date not in data["output_dates"]:
-                                    data["output_dates"][date] = {}
-                                    print('date added to output_dates')
-                                sub = post.get("subreddit")
-                                if sub in subreddit_list:
-                                    if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
-                                        if sub in data["output_dateless"]:
-                                            data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                            data["output_dates"][date][sub].append([post.get("title"), log_normalized_score])
-                                        if sub not in data["output_dateless"]:
-                                            data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                            data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-                            except:
-                                pass
-                        print('done opening ' + i + ' at: ')
-                        print(datetime.datetime.now())
-                elif i.endswith('.xz'):
-                    if i.startswith('RS_v'):
-                        date = i[6:13]
-                    else:
-                        date = i[3:10]
-                    print('opening  ' + i + ' at: ')
-                    print(datetime.datetime.now())
-                    with lzma.open(i, mode='rt') as content:
-                        for line in content:
-                            try:
-                                post = json.loads(line)
-                                if date not in data["output_dates"]:
-                                    data["output_dates"][date] = {}
-                                    print('date added to output_dates')
-                                sub = post.get("subreddit")
-                                if sub in subreddit_list:
-                                    if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
-                                        if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
-                                            data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                            data["output_dates"][date][sub].append([[post.get("title"), log_normalized_score]])
-                                        else:
-                                            data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                            data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-                            except:
-                                pass
-                        print('done opening ' + i + ' at: ')
-                        print(datetime.datetime.now())
-                elif i.endswith('.gz'): 
-                    date = i[3:10]
-                    print('opening ' + i + ' at: ')
-                    print(datetime.datetime.now())
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2011.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2012':
+            with open("/home/bmountain/dm_project/output_2012.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with bz2.open(i, "r") as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2012.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2013':
+            with open("/home/bmountain/dm_project/output_2013.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with bz2.open(i, "r") as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2013.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2014':
+            with open("/home/bmountain/dm_project/output_2014.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with bz2.open(i, "r") as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2014.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2015':
+            with open("/home/bmountain/dm_project/output_2015.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
                     with gzip.open(i) as content:
-                        for line in content:
-                            try:
-                                post = json.loads(line)
-                                if date not in data["output_dates"]:
-                                    data["output_dates"][date] = {}
-                                    print('date added to output_dates')
-                                sub = post.get("subreddit")
-                                if sub in subreddit_list:
-                                    if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
-                                        if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
-                                            data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
-                                            data["output_dates"][date][sub].append([post.get("title"), log_normalized_score])
-                                        else:
-                                            data["output_dateless"][sub] = [[post.get("title"), log_normalized_score]]
-                                            data["output_dates"][date][sub] = [[post.get("title"), log_normalized_score]]
-                            except:
-                                pass
-                        print('done opening ' + i + ' at: ')
-                        print(datetime.datetime.now())
-        with open("/home/bmountain/dm_project/output.json","w") as j_file:
-            json.dump(data,j_file)
-
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2015.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2016':
+            with open("/home/bmountain/dm_project/output_2016.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with gzip.open(i) as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2016.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2017':
+            with open("/home/bmountain/dm_project/output_2017.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with bz2.open(i, "r") as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2017.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2018':
+            with open("/home/bmountain/dm_project/output_2018.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with lzma.open(i, mode='rt') as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2018.json","w") as j_file:
+                json.dump(data,j_file)
+        if year == '2019':
+            with open("/home/bmountain/dm_project/output_2019.json", "r+") as json_date_file:
+                data = json.load(json_date_file)
+                with open("/home/bmountain/dm_project/output_master.json", "r+") as json_master:
+                    master_data = json.load(json_master)
+                    with gzip.open(i) as content:
+                        print(datetime.datetime.now(), 'opening ' + i + ' at: ')
+                        populate_dicts(content)
+                with open("/home/bmountain/dm_project/output_master.json", "w") as master_write:
+                    json.dump(master_data,master_write)
+            with open("/home/bmountain/dm_project/output_2019.json","w") as j_file:
+                json.dump(data,j_file)
+       
 def aggregate_titles(subreddit):
     '''
     Aggregate all the post titles for each subreddit
     '''
-    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output_master.json", "r+") as json_file:
         data = json.load(json_file)
-        aggregated_titles[subreddit] = " ".join(j[0] for j in data["output_dateless"][subreddit])
+        aggregated_titles[subreddit] = " ".join(j[0] for j in data[subreddit])
         
 def create_metric(subreddit):
     '''
     Creates a bar graph with each subreddit and their aggregated political bias score
     TODO:
-    implement adding in the scores over time, create the spaghetti plot and need to sort the dates
+    
     '''
-    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output_master.json", "r+") as json_file:
         data = json.load(json_file)
-        post_list_dateless = data["output_dateless"][subreddit]
+        post_list = data[subreddit]
         scores[subreddit] = 0
         num_posts = 0
-        for j in post_list_dateless:
+        for j in post_list:
             num_posts+=1
             num_cons_words = 0
             num_lib_words = 0
@@ -223,14 +257,16 @@ def create_metric(subreddit):
 def create_scores_for_each_date():
     '''
     TODO:
-    check this over and make sure it correctly populates the dict
+    implement with the separate json files
     '''
-    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
-        data = json.load(json_file)
-        dates = data["output_dates"]
-        for date in dates:
+    json_date_files = ["/home/bmountain/dm_project/output_2011.json", "/home/bmountain/dm_project/output_2012.json", "/home/bmountain/dm_project/output_2013.json",
+                "/home/bmountain/dm_project/output_2014.json", "/home/bmountain/dm_project/output_2015.json", "/home/bmountain/dm_project/output_2016.json",
+                "/home/bmountain/dm_project/output_2017.json", "/home/bmountain/dm_project/output_2018.json", "/home/bmountain/dm_project/output_2019.json"]
+    for i in json_date_files:
+        date = i[34:38] + "-01"
+        with open(i, "r+") as json_file:
+            subreddit_dict = json.load(json_file)
             scores_dates[date] = []
-            subreddit_dict = dates[date] # dict where each key is a sub
             for subreddit_in_original_list in subreddit_list:
                 if subreddit_in_original_list not in subreddit_dict:
                     scores_dates[date].append((subreddit_in_original_list, 0))
@@ -239,7 +275,7 @@ def create_scores_for_each_date():
                 score = 0
                 num_posts = 0
                 for p in posts:
-                    num_posts += 1
+                    num_posts+=1
                     num_cons_words = 0
                     num_lib_words = 0
                     title_category_factor = 1
@@ -264,12 +300,11 @@ def create_scores_for_each_date():
                     score += ((title_score * 1.0) * sntmnt) * title_category_factor
                 score /= (num_posts * 1.0)
                 scores_dates[date].append((sub,score))
-
 def create_spaghetti_plot():
     '''
     Creates a spaghetti plot. X axis is dates, y axis is scores, each line is a subreddit
     TODO:
-    keep looking at this and check it over. use scores_dates.
+    implement for new methods
     '''
     # style
     plt.style.use('seaborn-darkgrid')
@@ -280,9 +315,9 @@ def create_spaghetti_plot():
     # multiple line plot
     num=0
     # want to loop through each subreddit first then get the dates
-    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output_master.json", "r+") as json_file:
         data = json.load(json_file)
-        for sub in data["output_dateless"]:
+        for sub in data:
             num+=1
             sub_scores = [] # should only need to scores_dates
             date_list = []
@@ -301,7 +336,7 @@ def create_spaghetti_plot():
     
     # Add titles
     plt.title("Suberddit Bias Over Time")
-    plt.xlabel("Date")
+    plt.xlabel("Date", rotation = 70)
     plt.ylabel("Score")
     plt.savefig('/home/bmountain/dm_project/spaghetti_plot.png', bbox_inches = "tight")
     plt.clf()
@@ -371,9 +406,9 @@ def plot_matrix(all_feature_names_arg,mat,filename,force_no_cocluster=False):
     plt.savefig(filename)
 
 def load_text_labels_for_matrix():
-    with open("/home/bmountain/dm_project/output.json", "r+") as json_file:
+    with open("/home/bmountain/dm_project/output_master.json", "r+") as json_file:
         data = json.load(json_file)
-        subreddit_keys = data["output_dateless"]
+        subreddit_keys = data
         for sub in subreddit_keys:
             posts = subreddit_keys[sub]
             for post in posts:
