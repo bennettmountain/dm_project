@@ -20,7 +20,7 @@ MathJax.Hub.Config({
 <dt-article>
 <h1>Political Subreddits are Biased</h1>
 <h2>tl;dr Using natual language processing, I assessed the bias of the top 9 most popular political subreddits on the popular internet forum site, Reddit.
-  I found that....
+  
 </h2>
 <dt-byline></dt-byline>
 <h2>Introduction</h2>
@@ -33,13 +33,20 @@ MathJax.Hub.Config({
   title of an article) and the post's score. The list of subreddits considered in this analysis were: politics,
   uspolitics, AmericanPolitics, progressive, democrats, Liberal, Republican, Conservative, and Libertarian.
 </p>
-<img src="reddit_political.png" width="280" height="131" alt="Reddit political logo from data incubator">
+<figure>
+  <img src="reddit_political.png" width="280" height="131" alt="Reddit political logo from data incubator"> 
+  <figcaption>image source: Data Incubator</figcaption>
+</figure>
+
 <h2>Overview</h2>
 <p>For my analysis, I needed to find a way to quantify the bias of a subreddit. No such way to do this currently exists, so a large problem
   was coming up with my own metric that I would use. Since using the actual contents of each post (which again, on political subreddits, are mostly articles!) was out 
   of the question, all that I realistically had to work
   with were the titles of the posts/articles. With the title of the post, I utilized the commonly used natural language process python library TextBlob.
-  <img src="textblob.png" width="295" height="270" alt="TextBlob logo"> 
+  <figure>
+    <img src="textblob.png" width="295" height="270" alt="TextBlob logo"> 
+    <figcaption>image source: TextBlob</figcaption>
+  </figure>
   <br>When given a piece
   or "blob" of text, TextBlob outputs two main features: the polarity and the subjectivity. Polarity is a measure from -1 to +1 where a negative score means that
   the blob is completely negative, and +1 means that the blob is completely positive. Subjectivity is a measure from 0 to +1, where 0 means that the blob is completely 
@@ -59,6 +66,10 @@ MathJax.Hub.Config({
   that a subreddit is left-leaning is sufficient to get the main takeaway.
   <br>
   Speaking of the main takeaway, what is it?
+  </p>
+<h2>Political Bias Score Over Time</h2>
+<img src="spaghetti_plot.png" alt="Subreddit Scores Over Time">
+  <p>
   <br> Well, here's the thing. My metric didn't do the best job of gauging the political bias of every subreddit. But, that doesn't mean it's completely useless.
   Interestingly, according to my metric, r/politics is the most conservative by far, with a score of almost 7x that of
   r/Libertarian and r/Conservative. As we continue to (openly) move left in the political spectrum, one would expect subreddits to follow suit:
@@ -68,8 +79,7 @@ MathJax.Hub.Config({
   idea of what's going on, we need to see what the most common words being posted are.
 </p>
 
-<h2>Political Bias Score Over Time</h2>
-<img src="spaghetti_plot.png" alt="Subreddit Scores Over Time">
+
 
 <h2>A Deeper Look Into r/politics</h2>
 <img src="politics_wordcloud.png" alt="Politics Wordcoud">
@@ -94,6 +104,31 @@ MathJax.Hub.Config({
 <p>
   From the top 10 bigrams, we see that
 </p>
+
+<h2>Time Periods Considered</h2>
+<p>To reduce the runtime but still get a good sense of how the political subreddits have changed over the years, I only looked at the posts in the month of January
+  from the years 2011-2019.
+</p>
+<h2>Appendix: Methodology</h2>
+<p>As mentioned in the introduciton, I had to create my own metric to gague the political bias of the subreddit. Here's how:</p>
+<p>For each post with a score of 10 or over, take the log of the score, then normalize the score by the number of posts in that given time period. Count 
+  the number of words in the title that are in my
+  set of "conservative words" and the number of words that are in my set of "liberal words". If there are more conservative words than liberal words,
+  the article is probably about a conservative topic, so multiply it by -1 (I wanted conservative to be negative, and liberal positive). 
+  If not, leave the score as is. If the title is subjective, multiply the score by 50 (giving the post a weight of at least 5x since the min subjectivity
+  score is 0.1). Finally, multiply by the polarity, and 
+  Doing this let my metric define negative sentiment towards a conservative topic as "left leaning" (overall score > 0), and positive sentiment towards a
+  liberal topic also be "left leaning," and so on.
+</p>
+<h2>Appendix: The sets of "left-leaning" and "right leaning" topics</h2>
+<h3>"Left-leaning" Topics</h3>
+<p>"progressive","Biden","universal basic income","AOC", "Ocasio-Cortez", "liberal", "democrat", "Obama", "Clinton", "Sanders", 
+    "green new deal", "leftist", "Yang", "Warren", "Kamala", "medicare for all"</p>
+<h3>"Right-leaning" Topics</h3>
+<p>Conservative words: "Cheney","Shapiro","Koch","Paul Ryan","Rand Paul","Bush","Palin","Mattis","McCain","Romney", "Trump",
+    "Cruz", "republican", "Kushner", "conservative", "GOP", "Pence"</p>
+<img src="politics_top_10_bigrams_.png" alt="Politics Top 10 Bigrams"><img src="Libertarian_top_10_bigrams_.png" alt = "progressive bigrams">
+<img src="Conservative_top_10_bigrams_.png" alt = "Conservative bigrams"><img src="democrats_top_10_bigrams_.png" alt = "democrats bigrams">
 <h2>A Deeper Look Into r/Libertarian</h2>
 <img src="Libertarian_wordcloud.png" alt = "Democrats Wordcoud">
 <img src="Libertarian_top_10_bigrams_.png" alt = "progressive bigrams">
@@ -128,35 +163,6 @@ MathJax.Hub.Config({
 
 <p>democrats</p>
 <img src="democrats_top_10_bigrams_.png" alt = "democrats bigrams">
-<h2>Political Bias of Subreddits Over the Years</h2>
-<img src="spaghetti_plot.png" alt="Spaghetti Plot">
-<p>
-  This plot shows the political bias of each subreddit over time for the month of January from 2011 to 2017. Subreddits that have a score of 0 were not active for
-  that date. From this plot, we can see that my metric thinks that subreddits have gotten more conservative over time. Looking at r/politics shows this 
-</p>
-
-<h7>Appendix: Methodology</h7>
-
-<p>As mentioned in the introduciton, I had to create my own metric to gague the political bias of the subreddit. Here's how:</p>
-<p>For each post with a score of 10 or over, take the log of the score, then normalize the score by the number of subscribers. Count the number of words in the title that are in my
-  set of "conservative words" and the number of words that are in my set of "liberal words". If there are more conservative words than liberal words,
-  the article is probably about a conservative topic, so multiply it by -1 (I wanted conservative to be negative, and liberal positive). 
-  If not, leave the score as is. If the title is subjective, multiply the score by 50 (giving the post a weight of at least 5x since the min subjectivity
-  score is 0.1). Finally, multiply by the polarity.
-  Doing this let my metric define negative sentiment towards a conservative topic as "left leaning" (overall score > 0), and positive sentiment towards a
-  liberal topic also be "left leaning," and so on.
-</p>
-<p>My metric</p>
-<p>Because of issues with computation time, I had to scale down my data to be the posts in the month of January from the years 2011-2019.</p>
-
-
-<img src="politics_top_10_bigrams_.png" alt="Politics Top 10 Bigrams"><img src="Libertarian_top_10_bigrams_.png" alt = "progressive bigrams">
-<img src="Conservative_top_10_bigrams_.png" alt = "Conservative bigrams"><img src="democrats_top_10_bigrams_.png" alt = "democrats bigrams">
-
-<p>Liberal words: "progressive","Biden","universal basic income","AOC", "Ocasio-Cortez", "liberal", "democrat", "Obama", "Clinton", "Sanders", 
-    "green new deal", "leftist", "Yang", "Warren", "Kamala", "medicare for all"</p>
-<p>Conservative words: "Cheney","Shapiro","Koch","Paul Ryan","Rand Paul","Bush","Palin","Mattis","McCain","Romney", "Trump",
-    "Cruz", "republican", "Kushner", "conservative", "GOP", "Pence"</p>
 
 
 <p>Reddit political image from https://blog.thedataincubator.com/2018/06/a-study-of-reddit-politics/</p>

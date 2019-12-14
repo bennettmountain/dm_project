@@ -95,7 +95,7 @@ def open_files():
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
     #files = ['RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2019-01.gz']
+    files = ['RS_2011-01.bz2']
     for i in files:
         year = i[3:7]
         if year == '2011':
@@ -359,39 +359,19 @@ def aggregate_titles(subreddit):
         data = json.load(json_file)
         aggregated_titles[subreddit] = " ".join(j[0] for j in data[subreddit])
         
-def create_metric(subreddit):
+def create_metric():
     '''
     Creates a bar graph with each subreddit and their aggregated political bias score
-    TODO:
+    TODO: go through scores_dates and populate it that way
     
     '''
-    with open("/home/bmountain/dm_project/output_master.json", "r+") as json_file:
-        data = json.load(json_file)
-        post_list = data[subreddit]
+    for subreddit in subreddit_list:
         scores[subreddit] = 0
-        num_posts = 0
-        for j in post_list:
-            num_posts+=1
-            num_cons_words = 0
-            num_lib_words = 0
-            title_category_factor = 1 # 1 if title is about a liberal topic, -1 if about conservative topic
-            for word in j[0]:
-                if word in conservative_words:
-                    cons_words+=1
-                elif word in liberal_words:
-                    lib_words+=1
-            if num_cons_words >= num_lib_words:
-                title_category_factor = -1
-            title = TextBlob(j[0])
-            if title.sentiment.subjectivity > 0.0:
-                # heavier weighting for subjective article titles
-                # since the min subjectivity > 0 is 0.1, multiplying by 50 gives it at least 5x weight
-                sntmnt = (title.sentiment.polarity * 50.0 * title.sentiment.subjectivity)
-            else:
-                sntmnt = title.sentiment.polarity
-            scores[subreddit] += ((j[1] * 1.0) * sntmnt) * title_category_factor
-        for sub in scores: # normalize score by dividing by the number of posts in the sub.
-            scores[sub] /= (num_posts*1.0)
+        for date in scores_dates:
+            sub_list = scores_dates[date]
+            for sub in sub_list:
+                if subreddit == sub:
+                    scores[subreddit] += scores_dates[date][subreddit]
 
 def create_scores_for_each_date():
     '''
@@ -602,18 +582,17 @@ def main():
     print(datetime.datetime.now(),' starting aggregating titles and creating metric for each subreddit')
     for subreddit in subreddit_list: # switched output for subreddit_list
         aggregate_titles(subreddit)
-        create_metric(subreddit)
     print(datetime.datetime.now(),' done aggregating titles and creating metric for each subreddit')
-    print(scores)
     for subreddit in aggregated_titles:
         create_bigrams(subreddit)
         plot_wordclouds(subreddit)
     print(datetime.datetime.now(),' done creating bigrams and plotting wordclouds for each subreddit')
     plot_bigrams()
-    plot_metric()
     print(datetime.datetime.now(),' create_scores_for_each_date()')
     create_scores_for_each_date()
-    print(scores_dates)
+    create_metric()
+    print(scores)
+    plot_metric()
     create_spaghetti_plot()
     load_text_labels_for_matrix()
     print(datetime.datetime.now(), ' plotting matrix')
