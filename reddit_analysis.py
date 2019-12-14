@@ -576,7 +576,7 @@ def plot_wordclouds(subreddit):
     plt.close()
 
 def main():
-    open_files()
+    #open_files()
     print('done opening all files')
     print(datetime.datetime.now(),' starting aggregating titles and creating metric for each subreddit')
     for subreddit in subreddit_list: # switched output for subreddit_list
