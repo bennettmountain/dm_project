@@ -164,7 +164,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0)
                                         if sub in data["output_dateless"]: # sub also has to be in data[ouput_dates]
                                             data["output_dateless"][sub].append([post.get("title"), log_normalized_score])
                                             data["output_dates"][date][sub].append([post.get("title"), log_normalized_score])

@@ -94,7 +94,8 @@ def open_files():
     #files = [f for f in os.listdir(path)] #issue with RS_2011-01.bz2 having some non unicode-32 characters.
     #files = ['RS_2017-11.bz2','RS_2017-10.bz2','RS_2017-08.bz2','RS_2017-07.bz2','RS_2017-06.bz2','RS_2017-05.bz2','RS_2017-04.bz2']
     #files = ['RS_2011-01.bz2', 'RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
-    files = ['RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
+    #files = ['RS_2012-01.bz2','RS_2013-01.bz2','RS_2014-01.bz2','RS_2015-01.gz','RS_2016-01.gz','RS_2017-01.bz2','RS_2018-01.xz','RS_2019-01.gz']
+    files = ['RS_2019-01.gz']
     for i in files:
         year = i[3:7]
         if year == '2011':
@@ -334,7 +335,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = (math.log(post.get("score")) * 1.0)
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:

@@ -33,6 +33,7 @@ MathJax.Hub.Config({
   title of an article) and the post's score. The list of subreddits considered in this analysis were: politics,
   uspolitics, AmericanPolitics, progressive, democrats, Liberal, Republican, Conservative, and Libertarian.
 </p>
+<img src="reddit_political.png" width="280" height="131" alt="Reddit political logo from data incubator">
 <h2>Overview</h2>
 <p>For my analysis, I needed to find a way to quantify the bias of a subreddit. No such way to do this currently exists, so a large problem
   was coming up with my own metric that I would use. Since using the actual contents of each post (which again, on political subreddits, are mostly articles!) was out 
@@ -51,11 +52,12 @@ MathJax.Hub.Config({
   left-leaning, or truly neutral.
   </p>
   <p>
-  All that you need to know moving forward though, is that I made the decision to have a negative score mean that a subreddit is right-leaning, a positive score 
+  All that you need to know moving forward though, is that for my metric I made the decision to have a negative score mean that a subreddit is right-leaning, a positive score 
   to mean that a subreddit
   is left-leaning, and a score of 0 to mean that a subreddit is perfectly objective. Though there's no perfect way to intrepret what the scores actually mean,
   knowing that a negative score corresponds to my algorithm thinking that a subreddit is right-leaning and a positive score corresponding to my algorithm thinking 
   that a subreddit is left-leaning is sufficient to get the main takeaway.
+  <br>
   Speaking of the main takeaway, what is it?
   <br> Well, here's the thing. My metric didn't do the best job of gauging the political bias of every subreddit. But, that doesn't mean it's completely useless.
   Interestingly, according to my metric, r/politics is the most conservative by far, with a score of almost 7x that of
@@ -157,7 +159,8 @@ MathJax.Hub.Config({
     "Cruz", "republican", "Kushner", "conservative", "GOP", "Pence"</p>
 
 
-
+<p>Reddit political image from https://blog.thedataincubator.com/2018/06/a-study-of-reddit-politics/</p>
+<p>Textblob image from https://textblob.readthedocs.io/en/dev/</p>
 </dt-article>
 
 <dt-appendix>
