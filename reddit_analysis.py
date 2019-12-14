@@ -370,7 +370,7 @@ def create_metric():
     for date in scores_dates:
         sub_list = scores_dates[date]
         for sub in sub_list:
-            scores[sub] += sub[0]
+            scores[sub] += sub[1]
 
 def create_scores_for_each_date():
     '''
