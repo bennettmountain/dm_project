@@ -367,11 +367,10 @@ def create_metric():
     '''
     for subreddit in subreddit_list:
         scores[subreddit] = 0
-        for date in scores_dates:
-            sub_list = scores_dates[date]
-            for sub in sub_list:
-                if subreddit == sub:
-                    scores[subreddit] += scores_dates[date][subreddit]
+    for date in scores_dates:
+        sub_list = scores_dates[date]
+        for sub in sub_list:
+            scores[sub] += scores_dates[date][sub]
 
 def create_scores_for_each_date():
     '''
