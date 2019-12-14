@@ -109,7 +109,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -137,7 +137,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -165,7 +165,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -193,7 +193,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -221,7 +221,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -249,7 +249,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -277,7 +277,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
@@ -305,7 +305,7 @@ def open_files():
                                 sub = post.get("subreddit")
                                 if sub in subreddit_list:
                                     if post.get("score") > 10: # arbitrary threshold
-                                        log_normalized_score = (math.log(post.get("score")) * 1.0) / subreddit_members.get(sub)
+                                        log_normalized_score = math.log(post.get("score")) * 1.0
                                         if sub in data:
                                             data[sub].append([post.get("title"), log_normalized_score])
                                         if sub not in data:
