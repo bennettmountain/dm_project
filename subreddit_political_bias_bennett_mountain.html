@@ -20,7 +20,7 @@ MathJax.Hub.Config({
 <dt-article>
 <h1>Political Subreddits are Biased</h1>
 <h2>tl;dr Using natual language processing, I assessed the bias of the top 9 most popular political subreddits on the popular internet forum site, Reddit.
-  I found that r/progressive, r/democrats and r/Republican are the most right-leaning subreddits, and uspolitics is the only left-leaning subreddit.
+  I found that....
 </h2>
 <dt-byline></dt-byline>
 <h2>Introduction</h2>
@@ -32,15 +32,32 @@ MathJax.Hub.Config({
   problem, I developed my own metric for a subreddit's bias based on the title of each post (which almost always is the
   title of an article) and the post's score. The list of subreddits considered in this analysis were: politics,
   uspolitics, AmericanPolitics, progressive, democrats, Liberal, Republican, Conservative, and Libertarian.
-
 </p>
-<h2>Overall Political Bias Score</h2>
-<img src="spaghetti_plot.png" alt="Subreddit Scores Over Time">
-<p>For my analysis, I made the decision to have a negative score mean that a subreddit is right-leaning, a positive score to mean that a subreddit
+<h2>Overview</h2>
+<p>For my analysis, I needed to find a way to quantify the bias of a subreddit. No such way to do this currently exists, so a large problem
+  was coming up with my own metric that I would use. Since using the actual contents of each post (which again, on political subreddits, are mostly articles!) was out 
+  of the question, all that I realistically had to work
+  with were the titles of the posts/articles. With the title of the post, I utilized the commonly used natural language process python library TextBlob.
+  <img src="textblob.png" width="295" height="270" alt="TextBlob logo"> 
+  <br>When given a piece
+  or "blob" of text, TextBlob outputs two main features: the polarity and the subjectivity. Polarity is a measure from -1 to +1 where a negative score means that
+  the blob is completely negative, and +1 means that the blob is completely positive. Subjectivity is a measure from 0 to +1, where 0 means that the blob is completely 
+  objective and 1 meaning that the text is completely subjective. For example, the blob "I hate the cold weather" has a polarity of -0.7 and a subjectivity of 0.95,
+  while the blob "there are 365 days in the year" has a polarity of 0 and subjectivity of 0.
+  <br>
+  I'll spare the exact technical details, but using each word in the title/post, I determined whether a post was about a left-leaning, right-leaning, or 
+  neutral topic. Using the polarity, subjectivity, score of the post, and my determination of leaning of the topic of the post, I quantified the political bias of a 
+  subreddit for that one post. By taking into account all posts, I found a way to quantify the political bias of an entire subreddit as either right-leaning, 
+  left-leaning, or truly neutral.
+  </p>
+  <p>
+  All that you need to know moving forward though, is that I made the decision to have a negative score mean that a subreddit is right-leaning, a positive score 
+  to mean that a subreddit
   is left-leaning, and a score of 0 to mean that a subreddit is perfectly objective. Though there's no perfect way to intrepret what the scores actually mean,
   knowing that a negative score corresponds to my algorithm thinking that a subreddit is right-leaning and a positive score corresponding to my algorithm thinking 
   that a subreddit is left-leaning is sufficient to get the main takeaway.
   Speaking of the main takeaway, what is it?
+  <br> Well, here's the thing. My metric didn't do the best job of gauging the political bias of every subreddit. But, that doesn't mean it's completely useless.
   Interestingly, according to my metric, r/politics is the most conservative by far, with a score of almost 7x that of
   r/Libertarian and r/Conservative. As we continue to (openly) move left in the political spectrum, one would expect subreddits to follow suit:
   theoritically, the mainstream subreddits should become 
@@ -49,6 +66,8 @@ MathJax.Hub.Config({
   idea of what's going on, we need to see what the most common words being posted are.
 </p>
 
+<h2>Political Bias Score Over Time</h2>
+<img src="spaghetti_plot.png" alt="Subreddit Scores Over Time">
 
 <h2>A Deeper Look Into r/politics</h2>
 <img src="politics_wordcloud.png" alt="Politics Wordcoud">
