@@ -25,7 +25,8 @@ import gzip
 import math
 import matplotlib.colors as colors
 from sklearn.cluster import SpectralCoclustering
-import sklearn.linear_model as lm
+from sklearn.linear_model import LogisticRegression,LogisticRegressionCV
+#import sklearn.linear_model as lm
 import scipy
 import datetime
 import argparse
@@ -595,7 +596,7 @@ def plot_wordclouds(subreddit):
     plt.close()
 
 def main():
-    #open_files()
+    open_files()
     print('done opening all files')
     print(datetime.datetime.now(),' starting aggregating titles and creating metric for each subreddit')
     for subreddit in subreddit_list: # switched output for subreddit_list
@@ -644,9 +645,9 @@ def main():
     model = lm.LogisticRegression(
             penalty=args.penalty,
             C=args.C,
-            solver='lbfgs',
+            solver='liblinear',
             class_weight='balanced',
-            multi_class='multinomial'
+            multi_class='auto'
             )
     if args.num_eig>0:
         gram = np.dot(np.transpose(features),features)
