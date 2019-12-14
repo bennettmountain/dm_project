@@ -363,7 +363,7 @@ def create_metric():
     '''
     Creates a bar graph with each subreddit and their aggregated political bias score
     TODO: go through scores_dates and populate it that way
-    
+    {'2011':[('uspolitics',0), ']}
     '''
     for subreddit in subreddit_list:
         scores[subreddit] = 0
@@ -371,7 +371,8 @@ def create_metric():
         for date in scores_dates:
             sub_list = scores_dates[date]
             for sub in sub_list:
-                scores[subreddit] += sub[1]
+                if sub[0] == subreddit
+                    scores[subreddit] += sub[1]
 
 def create_scores_for_each_date():
     '''
